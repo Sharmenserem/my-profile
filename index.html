@@ -1,16 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sharmen JS Starter</title>
-  <link rel="stylesheet" href="../styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sharmen Music Portal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://files.catbox.moe/0afohj.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 60px 20px;
+      text-align: center;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      width: 300px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: orange;
+      color: white;
+      border-radius: 8px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .trending {
+      margin-top: 60px;
+    }
+    .trending h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    .trending ul {
+      list-style: none;
+      padding: 0;
+      font-size: 18px;
+      line-height: 1.8em;
+    }
+    .contact, .social {
+      margin-top: 60px;
+      font-size: 14px;
+    }
+    .social span {
+      margin: 0 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Sharmen</h1>
-  <video id="promoVideo" width="320" height="240" controls>
-    <source src="../public/assets/sample-video.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <button id="playBtn">Play Intro</button>
+  <div class="overlay">
+    <h1>SHARMEN PROJECT</h1>
+    <p>Search and download your favorite tracks by name</p>
+    <input type="text" placeholder="Type song name..." />
+    <button onclick="searchSong()">SEARCH</button>
+
+    <div class="trending">
+      <h2>🔥 Top Trending Songs</h2>
+      <ul>
+        <li>1. Mbosso – Amepotea</li>
+        <li>2. Omah Lay – Holy Ghost</li>
+        <li>3. Bruce Melodie & Shaggy – When She’s Around</li>
+        <li>4. Ayra Starr – Commas</li>
+        <li>5. Diamond Platnumz – Happy Birthday</li>
+        <li>6. Kizz Daniel – Twe Twe</li>
+        <li>7. Burna Boy – City Boys</li>
+        <li>8. Harmonize – Single Again</li>
+        <li>9. Sauti Sol – Lil Mama</li>
+        <li>10. Zuchu – Napambana</li>
+      </ul>
+    </div>
+
+    <div class="contact">Contact: +254 704 322 434</div>
+    <div class="social">
+      <span>YouTube</span> |
+      <span>TikTok</span> |
+      <span>Facebook</span>
+    </div>
+  </div>
+
+  <script>
+    function searchSong() {
+      const query = document.querySelector('input').value;
+      const url = `https://api.example.com/search?song=${encodeURIComponent(query)}`;
+      window.open(url, '_blank');
+    }
+  </script>
 </body>
-</html>
+  </html>
+  
