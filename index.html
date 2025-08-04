@@ -8,7 +8,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: url('https://files.catbox.moe/0afohj.jpeg') no-repeat center center fixed;
+      background: url('your-background.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Segoe UI', sans-serif;
       color: white;
@@ -57,6 +57,14 @@
       font-size: 18px;
       line-height: 1.8em;
     }
+    #results {
+      margin-top: 60px;
+      font-size: 18px;
+    }
+    #results a {
+      color: orange;
+      text-decoration: none;
+    }
     .contact, .social {
       margin-top: 60px;
       font-size: 14px;
@@ -89,6 +97,10 @@
       </ul>
     </div>
 
+    <div id="results">
+      <!-- Search results appear here -->
+    </div>
+
     <div class="contact">Contact: +254 704 322 434</div>
     <div class="social">
       <span>YouTube</span> |
@@ -98,10 +110,23 @@
   </div>
 
   <script>
-    function searchSong() {
+    async function searchSong() {
       const query = document.querySelector('input').value;
-      const url = `https://api.example.com/search?song=${encodeURIComponent(query)}`;
-      window.open(url, '_blank');
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = `<p>Searching for "${query}"...</p>`;
+
+      // Simulated results — replace this with a real API call
+      const fakeResults = [
+        { title: `${query} – Live Mix`, url: "https://www.youtube.com/watch?v=abc123" },
+        { title: `${query} – HD Video`, url: "https://www.youtube.com/watch?v=def456" },
+        { title: `${query} – Audio Only`, url: "https://www.youtube.com/watch?v=ghi789" }
+      ];
+
+      resultsContainer.innerHTML = `<h3>Results:</h3><ul style="list-style: none;">`;
+      fakeResults.forEach(song => {
+        resultsContainer.innerHTML += `<li><a href="${song.url}" target="_blank">${song.title}</a></li>`;
+      });
+      resultsContainer.innerHTML += `</ul>`;
     }
   </script>
 </body>
