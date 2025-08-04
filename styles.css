@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #e0f7fa;
+}
+
+.hero {
+  text-align: center;
+  background: #006064;
+  color: white;
+  padding: 2em;
+}
+
+.hero-img {
+  max-width: 300px;
+  border-radius: 10px;
+}
+
+.contacts p {
+  margin: 0.3em;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  background: #004d40;
+  padding: 1em;
+}
+
+.navbar button {
+  background: #00796b;
+  color: white;
+  border: none;
+  padding: 0.7em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.music-grid {
+  display: flex;
+  gap: 2em;
+  justify-content: center;
+  padding: 2em;
+}
+
+.track-card {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.footer {
+  background: #263238;
+  color: white;
+  text-align: center;
+  padding: 1em;
+}
