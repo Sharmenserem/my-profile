@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shammelody - Download Videos & Audio</title>
+  <title>Sharmen Project - Stream & Download Music</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -15,98 +15,123 @@
       font-family: 'Poppins', sans-serif;
     }
     body {
-      background: #0f0c29;  /* fallback for old browsers */
-      background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
+      color: #fff;
     }
-    .music-anim {
+    .background-glow {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: url('https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif') center center / cover no-repeat;
-      opacity: 0.05;
+      opacity: 0.08;
       z-index: 1;
-      animation: fade 20s infinite alternate;
+      animation: pulse 15s infinite ease-in-out alternate;
     }
-    @keyframes fade {
-      from { opacity: 0.05; }
-      to { opacity: 0.15; }
+    @keyframes pulse {
+      0% { opacity: 0.06; }
+      100% { opacity: 0.15; }
     }
     .container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 40px;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
+      position: relative;
       z-index: 2;
-      max-width: 500px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      max-width: 550px;
       width: 100%;
-      color: #fff;
-      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
     }
-    .container h1 {
+    h1 {
+      font-size: 36px;
       text-align: center;
-      font-size: 32px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    .container input {
+    .tagline {
+      text-align: center;
+      font-weight: 400;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+    input {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: none;
       border-radius: 10px;
       margin-bottom: 20px;
-      font-size: 16px;
+      font-size: 15px;
     }
-    .container button {
+    button {
       width: 100%;
       padding: 14px;
-      font-size: 16px;
-      background: #ff416c;
-      background: linear-gradient(to right, #ff4b2b, #ff416c);
-      color: white;
+      font-size: 17px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: #fff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
-    .container button:hover {
-      opacity: 0.85;
+    button:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
     }
     .footer {
+      margin-top: 25px;
       text-align: center;
-      color: #aaa;
-      margin-top: 20px;
       font-size: 14px;
+      color: #ccc;
+    }
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .social a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .social a:hover {
+      color: #ff416c;
     }
   </style>
 </head>
 <body>
-  <div class="music-anim"></div>
+  <div class="background-glow"></div>
   <div class="container">
-    <h1>Shammelody</h1>
-    <p style="text-align:center;margin-bottom:20px">Download Your Favorite Videos & Music</p>
-    <input type="text" id="urlInput" placeholder="Enter video or audio URL..." />
+    <h1>Sharmen Project</h1>
+    <p class="tagline">Stream and Download Your Favorite Tracks</p>
+    <input type="text" id="urlInput" placeholder="Enter music or video URL..." />
     <button onclick="startDownload()">Download</button>
     <div class="footer">
       Contact: <strong>+254 704 322 434</strong>
+      <div class="social">
+        <a href="https://youtube.com/@shammelody" target="_blank">YouTube</a>
+        <a href="https://tiktok.com/@shammelody" target="_blank">TikTok</a>
+        <a href="https://facebook.com/shammelody" target="_blank">Facebook</a>
+      </div>
     </div>
   </div>
-  
+
   <script>
     function startDownload() {
-      const url = document.getElementById('urlInput').value;
+      const url = document.getElementById('urlInput').value.trim();
       if (!url) {
         alert("Please enter a valid URL.");
         return;
       }
-      alert("This feature requires a backend server to fetch the media.\n\nExample: Node.js with youtube-dl or yt-dlp API integration.");
+      alert("This requires backend setup to process downloads.\nTry Node.js with yt-dlp or youtube-dl for media handling.");
     }
   </script>
 </body>
-            </html>            
+</html>
