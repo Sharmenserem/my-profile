@@ -2,209 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shammelody - Stream & Download Music</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
+  <title>Shammelody Playlist - Jay Melody</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      color: #fff;
-      text-align: center;
       background: #000;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
-      z-index: -1;
-      opacity: 0.8;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
     }
 
     h1 {
-      margin-top: 40px;
-      font-size: 3rem;
-      text-shadow: 0 0 15px #0ff;
-    }
-
-    .search-bar {
       margin-top: 20px;
+      font-size: 2rem;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
     }
 
-    .search-bar input {
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 10px;
-      border: 2px solid #00ffff;
-      width: 250px;
-      outline: none;
-    }
-
-    .container {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .music-card {
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #00ffff;
-      border-radius: 15px;
-      padding: 20px;
-      width: 320px;
-      box-shadow: 0 0 15px #00ffff;
-      transition: transform 0.3s;
-    }
-
-    .music-card:hover {
-      transform: scale(1.05);
-    }
-
-    .buttons {
+    .video-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
       justify-content: center;
-      margin-top: 15px;
-    }
-
-    button {
-      padding: 10px 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      background: #00ffff;
-      color: #000;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #00ccff;
-    }
-
-    audio, video {
-      width: 100%;
-      margin-top: 10px;
-      border-radius: 10px;
-    }
-
-    .youtube-embed {
-      width: 100%;
-      height: 200px;
-      margin-top: 15px;
-      display: none;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    footer {
-      margin-top: 40px;
+      gap: 20px;
       padding: 20px;
-      font-size: 0.9rem;
-      background: rgba(0, 0, 0, 0.6);
-      border-top: 1px solid #00ffff;
+    }
+
+    .video {
+      width: 300px;
+      background: #111;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 10px #00ffff66;
+    }
+
+    iframe {
+      width: 100%;
+      height: 170px;
+      border-radius: 10px;
+    }
+
+    h2 {
+      font-size: 0.95rem;
+      margin: 10px 0;
+      color: #fff;
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #888;
+      font-size: 0.8rem;
+      padding-bottom: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎵 Shammelody 🎵</h1>
+  <h1>🎵 Shammelody Playlist - Jay Melody 🎵</h1>
+  <div class="video-list" id="videoList"></div>
 
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
+  <div class="footer">
+    Created by Shammelody | TikTok: @shammelody0 | IG: @shammelody0 | FB: Shammelody | Contact: +254704322434
   </div>
-
-  <div class="container" id="music-list">
-    <!-- Music Cards Injected Here -->
-  </div>
-
-  <footer>
-    Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
-    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
-  </footer>
 
   <script>
-    const songs = [
-      {
-        title: "Dream World",
-        mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        mp4: "https://www.w3schools.com/html/mov_bbb.mp4",
-        youtubeId: "ScMzIvxBSi4"
-      },
-      {
-        title: "Ocean Vibes",
-        mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        mp4: "https://www.w3schools.com/html/movie.mp4",
-        youtubeId: "VYOjWnS4cMY"
-      }
-    ];
+    const API_KEY = 'AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo';
+    const PLAYLIST_ID = 'PLpmss1izKMZU9nl6CQAwlny2lOq66wOqe'; // ✅ Jay Melody Playlist ID
+    const MAX_RESULTS = 12;
 
-    const musicList = document.getElementById('music-list');
+    const videoList = document.getElementById('videoList');
 
-    function renderSongs(songArray) {
-      musicList.innerHTML = '';
-      songArray.forEach(song => {
-        const card = document.createElement('div');
-        card.className = 'music-card';
+    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=${MAX_RESULTS}&playlistId=${PLAYLIST_ID}&key=${API_KEY}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.items || data.items.length === 0) {
+          videoList.innerHTML = '<p>No videos found in this playlist.</p>';
+          return;
+        }
 
-        const youtubeIframe = `
-          <iframe class="youtube-embed" id="yt-${song.youtubeId}"
-            src="https://www.youtube.com/embed/${song.youtubeId}?rel=0&enablejsapi=1"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
-        `;
+        data.items.forEach(item => {
+          const videoId = item.snippet.resourceId.videoId;
+          const title = item.snippet.title;
 
-        card.innerHTML = `
-          <h3>${song.title}</h3>
-          <audio controls src="${song.mp3}"></audio>
-          <div class="buttons">
-            <button onclick="window.open('${song.mp3}', '_blank')">Download MP3</button>
-            <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
-            <button onclick="streamSong('${song.mp4}')">Stream Video</button>
-            <button onclick="toggleYouTube('${song.youtubeId}')">Stream YouTube</button>
-          </div>
-          <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
-          ${youtubeIframe}
-        `;
+          const videoDiv = document.createElement('div');
+          videoDiv.className = 'video';
+          videoDiv.innerHTML = `
+            <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+            <h2>${title}</h2>
+          `;
 
-        musicList.appendChild(card);
+          videoList.appendChild(videoDiv);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching playlist:', error);
+        videoList.innerHTML = '<p>Could not load playlist. Check API key and playlist ID.</p>';
       });
-    }
-
-    function streamSong(videoUrl) {
-      const videoEl = document.querySelector(`video[src="${videoUrl}"]`);
-      if (videoEl.style.display === 'none') {
-        videoEl.style.display = 'block';
-        videoEl.play();
-      } else {
-        videoEl.pause();
-        videoEl.style.display = 'none';
-      }
-    }
-
-    function toggleYouTube(youtubeId) {
-      const ytEl = document.getElementById(`yt-${youtubeId}`);
-      ytEl.style.display = ytEl.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function filterSongs() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = songs.filter(song => song.title.toLowerCase().includes(query));
-      renderSongs(filtered);
-    }
-
-    // Initial render
-    renderSongs(songs);
   </script>
+
 </body>
 </html>
