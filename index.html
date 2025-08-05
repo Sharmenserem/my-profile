@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Stream & Download Music</title>
 
-  <!-- Cool Google Font -->
+  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
-  <!-- CSS Styles -->
   <style>
     body {
       margin: 0;
@@ -19,7 +18,6 @@
       overflow-x: hidden;
     }
 
-    /* Animated Background */
     body::before {
       content: "";
       position: fixed;
@@ -35,8 +33,21 @@
       text-shadow: 0 0 15px #0ff;
     }
 
+    .search-bar {
+      margin-top: 20px;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 2px solid #00ffff;
+      width: 250px;
+      outline: none;
+    }
+
     .container {
-      margin-top: 50px;
+      margin-top: 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -83,20 +94,36 @@
       margin-top: 10px;
       border-radius: 10px;
     }
+
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 0.9rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #00ffff;
+    }
   </style>
 </head>
 <body>
 
   <h1>🎵 Shammelody 🎵</h1>
-  <div class="container" id="music-list">
-    <!-- Dynamic Music Items Will Be Injected Here -->
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
   </div>
 
-  <script>
-    const API_KEY = 'AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo';
-    const BASE_URL = 'https://your-music-api-endpoint.com';
+  <div class="container" id="music-list">
+    <!-- Dynamic Music Cards -->
+  </div>
 
-    // Sample data (Replace this with fetch from your API)
+  <!-- Footer -->
+  <footer>
+    Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
+    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
+  </footer>
+
+  <script>
     const songs = [
       {
         title: "Dream World",
@@ -112,26 +139,32 @@
 
     const musicList = document.getElementById('music-list');
 
-    songs.forEach(song => {
-      const card = document.createElement('div');
-      card.className = 'music-card';
+    function renderSongs(songArray) {
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3>${song.title}</h3>
+          <audio controls src="${song.mp3}"></audio>
+          <div class="buttons">
+            <button onclick="window.open('${song.mp3}', '_blank')">Download MP3</button>
+            <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
+            <button onclick="streamSong('${song.mp4}')">Stream Video</button>
+          </div>
+          <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
+        `;
+        musicList.appendChild(card);
+      });
+    }
 
-      card.innerHTML = `
-        <h3>${song.title}</h3>
-        <audio controls src="${song.mp3}"></audio>
-        <div class="buttons">
-          <button onclick="window.open('${song.mp3}', '_blank')">Download MP3</button>
-          <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
-          <button onclick="streamSong('${song.mp4}')">Stream Video</button>
-        </div>
-        <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
-      `;
-
-      musicList.appendChild(card);
-    });
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = songs.filter(song => song.title.toLowerCase().includes(query));
+      renderSongs(filtered);
+    }
 
     function streamSong(videoUrl) {
-      const videoId = "video-" + videoUrl.split('/').pop().split('.')[0];
       const videoEl = document.querySelector(`[src="${videoUrl}"]`);
       if (videoEl.style.display === 'none') {
         videoEl.style.display = 'block';
@@ -141,7 +174,9 @@
         videoEl.style.display = 'none';
       }
     }
-  </script>
 
+    // Initial render
+    renderSongs(songs);
+  </script>
 </body>
 </html>
