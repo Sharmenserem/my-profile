@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Stream & Download Music</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
@@ -59,7 +58,7 @@
       border: 2px solid #00ffff;
       border-radius: 15px;
       padding: 20px;
-      width: 300px;
+      width: 320px;
       box-shadow: 0 0 15px #00ffff;
       transition: transform 0.3s;
     }
@@ -70,7 +69,9 @@
 
     .buttons {
       display: flex;
-      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
       margin-top: 15px;
     }
 
@@ -95,6 +96,15 @@
       border-radius: 10px;
     }
 
+    .youtube-embed {
+      width: 100%;
+      height: 200px;
+      margin-top: 15px;
+      display: none;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
     footer {
       margin-top: 40px;
       padding: 20px;
@@ -108,16 +118,14 @@
 
   <h1>🎵 Shammelody 🎵</h1>
 
-  <!-- Search Bar -->
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
   </div>
 
   <div class="container" id="music-list">
-    <!-- Dynamic Music Cards -->
+    <!-- Music Cards Injected Here -->
   </div>
 
-  <!-- Footer -->
   <footer>
     Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
     TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
@@ -128,12 +136,14 @@
       {
         title: "Dream World",
         mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        mp4: "https://www.w3schools.com/html/mov_bbb.mp4"
+        mp4: "https://www.w3schools.com/html/mov_bbb.mp4",
+        youtubeId: "ScMzIvxBSi4"
       },
       {
         title: "Ocean Vibes",
         mp3: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        mp4: "https://www.w3schools.com/html/movie.mp4"
+        mp4: "https://www.w3schools.com/html/movie.mp4",
+        youtubeId: "VYOjWnS4cMY"
       }
     ];
 
@@ -144,6 +154,16 @@
       songArray.forEach(song => {
         const card = document.createElement('div');
         card.className = 'music-card';
+
+        const youtubeIframe = `
+          <iframe class="youtube-embed" id="yt-${song.youtubeId}"
+            src="https://www.youtube.com/embed/${song.youtubeId}?rel=0&enablejsapi=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        `;
+
         card.innerHTML = `
           <h3>${song.title}</h3>
           <audio controls src="${song.mp3}"></audio>
@@ -151,21 +171,18 @@
             <button onclick="window.open('${song.mp3}', '_blank')">Download MP3</button>
             <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
             <button onclick="streamSong('${song.mp4}')">Stream Video</button>
+            <button onclick="toggleYouTube('${song.youtubeId}')">Stream YouTube</button>
           </div>
           <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
+          ${youtubeIframe}
         `;
+
         musicList.appendChild(card);
       });
     }
 
-    function filterSongs() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = songs.filter(song => song.title.toLowerCase().includes(query));
-      renderSongs(filtered);
-    }
-
     function streamSong(videoUrl) {
-      const videoEl = document.querySelector(`[src="${videoUrl}"]`);
+      const videoEl = document.querySelector(`video[src="${videoUrl}"]`);
       if (videoEl.style.display === 'none') {
         videoEl.style.display = 'block';
         videoEl.play();
@@ -173,6 +190,17 @@
         videoEl.pause();
         videoEl.style.display = 'none';
       }
+    }
+
+    function toggleYouTube(youtubeId) {
+      const ytEl = document.getElementById(`yt-${youtubeId}`);
+      ytEl.style.display = ytEl.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = songs.filter(song => song.title.toLowerCase().includes(query));
+      renderSongs(filtered);
     }
 
     // Initial render
