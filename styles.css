@@ -1,62 +1,107 @@
-/* Basic Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sham Downloader - Free Music & Video Downloads</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-body, html {
-  height: 100%;
-  font-family: 'Arial', sans-serif;
-  overflow: hidden;
-  position: relative;
-}
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
 
-/* Animated Background */
-.background {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(-45deg, #ff6ec4, #7873f5, #4facfe, #00f2fe);
-  background-size: 400% 400%;
-  animation: gradientMove 15s ease infinite;
-  z-index: -1;
-}
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
 
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-/* Foreground Content */
-.content {
-  position: relative;
-  color: white;
-  text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 20px;
-}
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5em;
-}
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5em;
-  opacity: 0.8;
-}
+        button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-audio {
-  width: 80%;
-  max-width: 400px;
-  margin-bottom: 2em;
-}
+        button:hover {
+            background-color: #005bb5;
+        }
 
-.credit {
-  font-size: 0.9rem;
-  opacity: 0.7;
-}
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sham Downloader</h1>
+        <p>Fast & Free Music and Video Downloads</p>
+    </header>
+
+    <div class="container">
+        <form id="downloadForm">
+            <label for="search">Search or Paste Video/Music URL:</label>
+            <input type="text" id="search" name="search" placeholder="Enter song name or paste video URL..." required>
+            <button type="submit">Download</button>
+        </form>
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <footer>
+        &copy; 2025 Sham Downloader. All rights reserved.
+    </footer>
+
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('search').value;
+            const resultDiv = document.getElementById('result');
+
+            // Placeholder: Simulate result
+            resultDiv.innerHTML = `
+                <p>Searching for: <strong>${query}</strong></p>
+                <p><em>This is a placeholder. Backend functionality required for actual downloading.</em></p>
+            `;
+        });
+    </script>
+
+</body>
+</html>
