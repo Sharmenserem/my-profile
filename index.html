@@ -3,118 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shammelody Downloader</title>
+  <title>Sham Downloader - Free Music & Video Downloads</title>
   <style>
     body {
-      background: url('https://files.catbox.moe/5jkacz.jpg') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0; padding: 0;
       font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      margin: 0;
+      padding: 0;
       color: #fff;
-      perspective: 1000px;
-      overflow-x: hidden;
     }
-    .site {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 40px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 15px;
-      transform: rotateY(8deg);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    .site h1 {
+
+    header {
+      background-color: #0073e6;
+      color: white;
+      padding: 15px 20px;
       text-align: center;
-      font-size: 2.8rem;
-      color: #00ffee;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    label {
+      font-size: 18px;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
       margin-bottom: 20px;
-      text-shadow: 1px 1px 10px #000;
-    }
-    #search {
-      width: 80%;
-      padding: 14px;
-      font-size: 1.1rem;
-      border-radius: 8px 0 0 8px;
       border: none;
+      border-radius: 6px;
     }
-    #btnSearch {
-      padding: 14px 22px;
-      font-size: 1.1rem;
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+      background-color: #0073e6;
+      color: white;
       border: none;
-      border-radius: 0 8px 8px 0;
-      background: #00ffee;
-      color: #000;
-      font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
+      width: 100%;
     }
-    .results { margin-top: 30px; }
-    .track { display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin-bottom: 15px; }
-    .track img { width: 80px; height: 80px; border-radius: 8px; margin-right: 20px; }
-    .info { flex: 1; }
-    .info h3 { margin: 0 0 8px; font-size: 1.2rem; }
-    .buttons button { margin-right: 8px; padding: 8px 14px; border: none; border-radius: 6px; background: #00ffee; color: #000; font-weight: bold; cursor: pointer; transition: transform .2s; }
-    .buttons button:hover { transform: scale(1.05); }
-    footer { text-align: center; margin-top: 50px; font-size: .9rem; color: #ccc; }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
+    #result {
+      margin-top: 25px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
-  <audio id="bgMusic" autoplay loop muted>
-    <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mpeg">
-  </audio>
 
-  <div class="site">
-    <h1>Shammelody Downloader</h1>
+  <header>
+    <h1>Sham Downloader 🎵</h1>
+    <p>Download Free MP3 from YouTube</p>
+  </header>
 
-    <div style="text-align:center; margin-bottom:30px;">
-      <input type="text" id="search" placeholder="Search songs or videos..." />
-      <button id="btnSearch">Search</button>
-    </div>
-
-    <div class="results" id="results"></div>
-
-    <footer>Created by <strong>Sharmen</strong></footer>
+  <div class="container">
+    <form id="downloadForm">
+      <label for="url">Paste YouTube URL:</label>
+      <input type="text" id="url" name="url" placeholder="e.g. https://www.youtube.com/watch?v=..." required />
+      <button type="submit">Download MP3</button>
+    </form>
+    <div id="result"></div>
   </div>
 
-<script>
-  const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
-  document.getElementById('btnSearch').onclick = searchMusic;
+  <footer>
+    Created by Sharmen | TikTok: @Shammelody0 | IG: @Shammelody0 | Contact: +255704322434
+  </footer>
 
-  async function searchMusic() {
-    const q = document.getElementById('search').value.trim();
-    if (!q) return;
+  <script>
+    document.getElementById('downloadForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=8&type=video&q=${encodeURIComponent(q)}&key=${apiKey}`
-    );
-    const json = await res.json();
-    const results = document.getElementById('results');
-    results.innerHTML = '';
+      const url = document.getElementById('url').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "Downloading... please wait ⏳";
 
-    json.items.forEach(i => {
-      const vid = i.id.videoId;
-      const title = i.snippet.title;
-      const channel = i.snippet.channelTitle;
-      const thumb = i.snippet.thumbnails.default.url;
-      const videoUrl = `https://www.youtube.com/watch?v=${vid}`;
+      try {
+        const res = await fetch('/download', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
+        });
 
-      const div = document.createElement('div');
-      div.className = 'track';
-      div.innerHTML = `
-        <img src="${thumb}" alt="">
-        <div class="info">
-          <h3>${title}</h3>
-          <p>${channel}</p>
-        </div>
-        <div class="buttons">
-          <button onclick="window.open('${videoUrl}','_blank')">Play</button>
-          <button onclick="window.open('${videoUrl}','_blank')">Download</button>
-        </div>`;
-      results.appendChild(div);
+        const data = await res.json();
+
+        if (res.ok && data.file) {
+          resultDiv.innerHTML = `
+            <p>✅ Download ready!</p>
+            <a href="/downloads/${data.file}" download>Click here to download your MP3</a>
+          `;
+        } else {
+          resultDiv.innerHTML = `<p>❌ Error: ${data.error || 'Failed to download.'}</p>`;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+      }
     });
-  }
-  // Unmute after 2s to work across browsers
-  setTimeout(() => document.getElementById('bgMusic').muted = false, 2000);
-</script>
+  </script>
+
 </body>
   </html>
-  
