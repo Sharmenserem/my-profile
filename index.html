@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody Downloader</title>
   <style>
     body {
@@ -9,83 +10,154 @@
       padding: 0;
       background: url('https://files.catbox.moe/5jkacz.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Arial, sans-serif;
-      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
     }
+
     .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 50px;
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 12px;
-      margin-top: 100px;
+      max-width: 900px;
+      margin: 80px auto;
+      background: rgba(0,0,0,0.6);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease-out;
+    }
+
+    h1 {
       text-align: center;
+      font-size: 3rem;
+      margin-bottom: 40px;
+      color: #00ffff;
+      text-shadow: 2px 2px 10px black;
     }
-    input[type="text"] {
-      width: 70%;
-      padding: 10px;
-      font-size: 16px;
+
+    #searchInput {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
+      margin-bottom: 30px;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #00ccff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0099cc;
-    }
+
     .results {
-      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    audio {
-      margin-top: 20px;
+
+    .result {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      backdrop-filter: blur(5px);
+    }
+
+    .result img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .info h3 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+
+    .buttons button {
+      padding: 10px 15px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #00ffff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .buttons button:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #aaa;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>🎶 Shammelody Downloader</h1>
-    <input type="text" id="search" placeholder="Search for music...">
-    <button onclick="searchMusic()">Search</button>
+<audio autoplay loop muted id="bg-audio">
+  <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mpeg">
+</audio>
 
-    <div class="results" id="results"></div>
-  </div>
+<div class="container">
+  <h1>Shammelody Downloader</h1>
+  <input type="text" id="searchInput" placeholder="Search for a song or video..." />
+  <div class="results" id="results"></div>
+  <footer>
+    <p>Created by <strong>Sharmen</strong></p>
+  </footer>
+</div>
 
-  <!-- OPTIONAL background music -->
-  <audio autoplay loop volume="0.1" style="display: none;">
-    <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mp3">
-  </audio>
+<script>
+  const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
 
-  <script>
-    async function searchMusic() {
-      const query = document.getElementById('search').value;
-      const res = await fetch(`https://shammelody-api.onrender.com/music/search?q=${encodeURIComponent(query)}`);
+  const searchInput = document.getElementById('searchInput');
+  const resultsDiv = document.getElementById('results');
+
+  searchInput.addEventListener('keyup', async (e) => {
+    if (e.key === 'Enter') {
+      const query = searchInput.value.trim();
+      if (!query) return;
+
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${apiKey}&maxResults=10&type=video`);
       const data = await res.json();
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = "";
 
-      data.results.forEach(track => {
-        const item = document.createElement('div');
-        item.innerHTML = `
-          <h3>${track.title} - ${track.artist}</h3>
-          <img src="${track.thumbnail}" width="100" />
-          <br/>
-          <audio controls src="${track.stream_url}"></audio>
-          <br/>
-          <a href="${track.stream_url}" download><button>Download</button></a>
+      resultsDiv.innerHTML = '';
+
+      data.items.forEach(item => {
+        const videoId = item.id.videoId;
+        const title = item.snippet.title;
+        const thumbnail = item.snippet.thumbnails.default.url;
+
+        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        const audioStreamUrl = `https://loader.to/api/button/?url=${videoUrl}`; // You can customize
+
+        const div = document.createElement('div');
+        div.className = 'result';
+        div.innerHTML = `
+          <img src="${thumbnail}" alt="${title}" />
+          <div class="info">
+            <h3>${title}</h3>
+            <div class="buttons">
+              <button onclick="window.open('${videoUrl}', '_blank')">Play</button>
+              <button onclick="window.open('${audioStreamUrl}', '_blank')">Download</button>
+            </div>
+          </div>
         `;
-        resultsDiv.appendChild(item);
+        resultsDiv.appendChild(div);
       });
     }
-  </script>
+  });
+</script>
 
 </body>
 </html>
