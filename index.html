@@ -1,19 +1,21 @@
-<!-- 🎵 Shammelody Enhanced HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Stream & Download Music</title>
+
+  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
       color: #fff;
+      text-align: center;
       background: #000;
       overflow-x: hidden;
-      text-align: center;
     }
 
     body::before {
@@ -22,13 +24,14 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
       z-index: -1;
-      opacity: 0.8;
+      opacity: 0.7;
     }
 
     h1 {
       margin-top: 40px;
       font-size: 3rem;
-      text-shadow: 0 0 15px #0ff;
+      text-shadow: 0 0 15px #ff69b4;
+      color: #ff69b4;
     }
 
     .search-bar {
@@ -39,7 +42,7 @@
       padding: 10px;
       font-size: 1rem;
       border-radius: 10px;
-      border: 2px solid #00ffff;
+      border: 2px solid #ff69b4;
       width: 250px;
       outline: none;
     }
@@ -54,11 +57,11 @@
 
     .music-card {
       background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #00ffff;
+      border: 2px solid #ff69b4;
       border-radius: 15px;
       padding: 20px;
       width: 300px;
-      box-shadow: 0 0 15px #00ffff;
+      box-shadow: 0 0 15px #ff69b4;
       transition: transform 0.3s;
     }
 
@@ -70,7 +73,6 @@
       display: flex;
       justify-content: space-around;
       margin-top: 15px;
-      flex-wrap: wrap;
     }
 
     button {
@@ -78,65 +80,55 @@
       font-weight: bold;
       border: none;
       border-radius: 8px;
-      background: #00ffff;
+      background: #ff69b4;
       color: #000;
       cursor: pointer;
-      margin: 5px;
       transition: background 0.3s;
     }
 
     button:hover {
-      background: #00ccff;
+      background: #ff1493;
     }
 
-    iframe, video, audio {
+    audio, video {
       width: 100%;
       margin-top: 10px;
       border-radius: 10px;
     }
 
-    .owner-badge {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #00ffff;
-      color: black;
-      padding: 10px 15px;
+    iframe {
       border-radius: 10px;
-      font-weight: bold;
-      box-shadow: 0 0 15px #00ffff;
-      z-index: 1000;
     }
 
     footer {
       margin-top: 40px;
       padding: 20px;
-      font-size: 0.9rem;
+      font-size: 1rem;
       background: rgba(0, 0, 0, 0.6);
-      border-top: 1px solid #00ffff;
+      border-top: 2px solid #ff69b4;
+      text-shadow: 0 0 10px #ff69b4;
+      color: #ffb6c1;
     }
   </style>
 </head>
 <body>
 
-  <div class="owner-badge">
-    🔊 By Shammelody<br>
-    ☎ 254704322434
-  </div>
-
   <h1>🎵 Shammelody 🎵</h1>
 
+  <!-- Search Bar -->
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
   </div>
 
-  <div class="container" id="music-list"></div>
+  <div class="container" id="music-list">
+    <!-- Dynamic Music Cards -->
+  </div>
 
+  <!-- Footer -->
   <footer>
-    Created by <strong>Shammelody</strong> |
-    TikTok: <strong>@shammelody0</strong> |
-    Facebook: <strong>shammelody</strong> |
-    Instagram: <strong>@shammelody0</strong>
+    👑 Created with 💖 by <strong>Shammelody</strong><br>
+    📞 Contact: 254704322434<br>
+    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
   </footer>
 
   <script>
@@ -182,11 +174,9 @@
         card.className = 'music-card';
         card.innerHTML = `
           <h3>${song.title}</h3>
-          <iframe src="${song.mp4}" height="200" frameborder="0" allowfullscreen></iframe>
+          <iframe width="100%" height="200" src="${song.mp4}" frameborder="0" allowfullscreen></iframe>
           <div class="buttons">
             <button onclick="window.open('${song.mp4}', '_blank')">Watch on YouTube</button>
-            <button onclick="downloadFromYouTube('${song.videoId}', 'mp3')">Download MP3</button>
-            <button onclick="downloadFromYouTube('${song.videoId}', 'mp4')">Download MP4</button>
           </div>
         `;
         musicList.appendChild(card);
@@ -225,7 +215,6 @@
 
         const youtubeSongs = data.items.map(item => ({
           title: item.snippet.title,
-          videoId: item.id.videoId,
           mp4: `https://www.youtube.com/embed/${item.id.videoId}`
         }));
 
@@ -247,11 +236,6 @@
       }
     }
 
-    function downloadFromYouTube(videoId, format) {
-      const endpoint = `/api/download?id=${videoId}&format=${format}`;
-      window.open(endpoint, '_blank');
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       renderSongs(songs);
 
@@ -264,8 +248,11 @@
       };
 
       const searchBar = document.querySelector('.search-bar');
-      if (searchBar) searchBar.appendChild(resetBtn);
+      if (searchBar) {
+        searchBar.appendChild(resetBtn);
+      }
     });
   </script>
 </body>
-</html>
+  </html>
+  
