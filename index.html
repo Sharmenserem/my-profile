@@ -2,22 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hey Brother - Sharmen Remix</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shammelody Downloader</title>
 </head>
 <body>
-  <div class="background"></div>
-  <div class="content">
-    <h1>Hey Brother (Remix)</h1>
-    <h2>by Sharmen</h2>
-    
+
+  <nav>
+    <a href="#">Home</a> |
+    <a href="#">About</a> |
+    <a href="#">Gallery</a> |
+    <a href="#">Contact</a>
+  </nav>
+
+  <header>
+    <h1>Shammelody Downloader</h1>
+    <p>Your source for downloading music, videos, and more!</p>
+  </header>
+
+  <main>
+    <h2>Audio Player</h2>
     <audio controls>
-      <source src="hey-brother-sharmen-remix.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
+      <source src="audio.mp3" type="audio/mpeg">
+      Your browser does not support audio playback.
     </audio>
-    
-    <p class="credit">Audio credit: Sharmen | Original by Avicii</p>
-  </div>
+
+    <h2>Video Player</h2>
+    <video width="320" height="240" controls>
+      <source src="video.mp4" type="video/mp4">
+      Your browser does not support video playback.
+    </video>
+
+    <h2>Download Files</h2>
+    <ul>
+      <li><a href="audio.mp3" download>Download MP3</a></li>
+      <li><a href="video.mp4" download>Download MP4</a></li>
+      <li><a href="document.pdf" download>Download PDF</a></li>
+    </ul>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Shammelody Downloader</p>
+  </footer>
+
 </body>
 </html>
+```
