@@ -1,190 +1,164 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>hammelody downloader - Documentation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shammelody Downloader</title>
   <style>
     body {
-      background-color: #f5f7fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 0;
-      color: #333;
-      line-height: 1.8;
-      font-size: 18px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1d1f27, #3a3d46);
+      overflow-x: hidden;
+      color: #fff;
     }
+
+    .animated-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif') center/cover no-repeat;
+      opacity: 0.15;
+      z-index: -1;
+    }
+
     .container {
-      max-width: 1100px;
-      margin: 60px auto;
-      background: #ffffff;
-      padding: 50px 60px;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-    h1, h2, h3 {
-      color: #222;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 3rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       text-align: center;
-      margin-bottom: 50px;
-      color: #0066cc;
     }
-    h2 {
-      font-size: 2.2rem;
-      margin-top: 50px;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-    }
-    h3 {
-      font-size: 1.7rem;
-      margin-top: 30px;
-    }
-    p {
-      margin-bottom: 25px;
-      font-size: 1.1rem;
-    }
-    ul, ol {
-      margin-left: 25px;
-      margin-bottom: 25px;
-    }
-    ul li, ol li {
+
+    h1 {
+      font-size: 3em;
+      color: #f39c12;
       margin-bottom: 10px;
     }
-    code {
-      background-color: #f0f0f0;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 1rem;
-      color: #e83e8c;
-    }
-    pre {
-      background: #f0f0f0;
-      padding: 18px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin-bottom: 25px;
-      font-size: 1rem;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .note {
-      background-color: #fff9c4;
-      border-left: 6px solid #ffeb3b;
-      padding: 20px 25px;
-      border-radius: 8px;
-      margin: 25px 0;
-      font-size: 1rem;
-    }
-    .tip {
-      background-color: #e3f2fd;
-      border-left: 6px solid #2196f3;
-      padding: 20px 25px;
-      border-radius: 8px;
-      margin: 25px 0;
-      font-size: 1rem;
-    }
-    hr {
-      margin: 50px 0;
+
+    input[type="text"] {
+      padding: 12px;
+      width: 70%;
+      font-size: 18px;
       border: none;
-      border-top: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin-left: 10px;
+      font-size: 16px;
+      background-color: #f39c12;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .results {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .track {
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    .track img {
+      width: 60px;
+      border-radius: 5px;
+      margin-right: 15px;
+    }
+
+    .track-info {
+      flex: 1;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #ccc;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
+  <div class="animated-bg"></div>
 
-<div class="container">
-  <h1>SnapInsta Video Downloader<br>Documentation</h1>
+  <!-- 🔊 Background Music -->
+  <audio autoplay loop muted id="bgMusic">
+    <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mpeg">
+  </audio>
 
-  <p>Thank you for purchasing the SnapInsta Video Downloader script. This documentation will guide you through the setup and customization process to get your downloader up and running quickly. If you follow the instructions carefully, you’ll have everything ready in just a few minutes!</p>
+  <div class="container">
+    <h1>🎶 Shammelody Downloader</h1>
+    <p>Search and Download Videos & MP3 Instantly</p>
 
-  <h2>1. Requirements</h2>
-  <p>Make sure your server meets the following requirements:</p>
-  <ul>
-    <li>PHP 8.1 or higher</li>
-    <li><code>file_get_contents</code> function enabled</li>
-    <li><code>cURL</code> support enabled</li>
-  </ul>
+    <input type="text" id="searchInput" placeholder="Search for songs or videos..." />
+    <button onclick="searchMusic()">Search</button>
 
-  <h2>2. Ads Setup</h2>
-  <p>To enable or disable ads, edit the <code>config.php</code> file:</p>
+    <div class="results" id="results"></div>
 
-  <h3>Enable/Disable Ads</h3>
-  <pre>
-define("ADS", true); // Enable ads
-define("ADS", false); // Disable ads
-  </pre>
-
-  <h3>Ad Placement Configuration</h3>
-  <p>Edit these parts inside <code>config.php</code> to set your ads:</p>
-
-  <pre>
-$config = array(
-    "ad728" => '&lt;img src="https://dummyimage.com/728x90/E1306C/fff" class="img-fluid"&gt;',
-    "ad468" => '&lt;img src="https://dummyimage.com/468x60/833AB4/fff" class="img-fluid"&gt;',
-    "ad300" => '&lt;img src="https://dummyimage.com/300x250/833AB4/fff" class="img-fluid"&gt;'
-);
-  </pre>
-
-  <p>Replace the dummy image URLs with your real ad codes (like AdSense banners).</p>
-
-  <h2>3. RapidAPI Setup</h2>
-  <p>This script uses RapidAPI to fetch Instagram media data.</p>
-
-  <h3>Use This RapidAPI Service</h3>
-  <p><a href="https://shorturl.at/KyjM9" target="_blank">https://shorturl.at/KyjM9</a></p>
-
-  <div class="note">
-    <strong>Note:</strong> Use this RapidAPI because the script is specially configured based on its API response structure. Using a different RapidAPI may break functionality.
+    <div class="footer">
+      📞 Contact: +254704322434 | © 2025 Shammelody.com
+    </div>
   </div>
 
-  <h3>Update RapidAPI URL</h3>
-  <p>Edit <code>instasave.core.php</code> and update this line:</p>
-  <pre>
-// RapidAPI endpoint URL
-$rapidapi_url = "your-rapidapi-Url" . urlencode($this->url);
-  </pre>
+  <script>
+    const API_KEY = 'AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo';
+    async function searchMusic() {
+      const query = document.getElementById('searchInput').value;
+      if (!query) return alert("Type something to search");
 
-  <h3>Update RapidAPI Headers</h3>
-  <p>Also, update your API Host and Key:</p>
-  <pre>
-// Set headers for RapidAPI
-$headers = array(
-    'x-rapidapi-host: your-rapidapi-host',
-    'x-rapidapi-key: your-rapidapi-key'
-);
-  </pre>
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = "<p>Loading...</p>";
 
-  <p>Make sure your API key is active and you have selected a suitable RapidAPI plan.</p>
+      try {
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(query)}&key=${API_KEY}`);
+        const data = await res.json();
 
-  <h2>4. How to Install</h2>
-  <p>Follow these steps to install and run the script:</p>
+        if (data.items.length === 0) {
+          resultsDiv.innerHTML = "<p>No results found.</p>";
+          return;
+        }
 
-  <ol>
-    <li><strong>Upload Files:</strong> Upload all extracted files into your hosting <code>public_html</code> or <code>htdocs</code> folder.</li>
-    <li><strong>Set Permissions:</strong> Ensure PHP files have at least read permission (644).</li>
-    <li><strong>Configure Ads:</strong> Edit <code>config.php</code> to manage ad settings if needed.</li>
-    <li><strong>Setup RapidAPI:</strong> Edit <code>instasave.core.php</code> and set your RapidAPI Host and Key.</li>
-    <li><strong>Access Script:</strong> Open your domain in the browser to test the script (example: <code>https://yourdomain.com/</code>).</li>
-  </ol>
+        resultsDiv.innerHTML = "";
+        data.items.forEach(item => {
+          const videoId = item.id.videoId;
+          const title = item.snippet.title;
+          const thumbnail = item.snippet.thumbnails.default.url;
+          const channel = item.snippet.channelTitle;
 
-  <div class="tip">
-    💡 <strong>Tip:</strong> If you see a blank page or errors, double-check PHP version, cURL, and your RapidAPI setup.
-  </div>
+          resultsDiv.innerHTML += `
+            <div class="track">
+              <img src="${thumbnail}" alt="thumb"/>
+              <div class="track-info">
+                <strong>${title}</strong><br/>
+                <em>${channel}</em><br/>
+                <a href="https://www.y2mate.com/youtube/${videoId}" target="_blank">
+                  🔽 Download
+                </a>
+              </div>
+            </div>
+          `;
+        });
 
-  <hr>
+      } catch (err) {
+        console.error(err);
+        resultsDiv.innerHTML = "<p>Error while fetching music. Try again.</p>";
+      }
+    }
 
-  <p>If you need support, feel free to contact us through the support page. Thanks again for choosing our script!</p>
-</div>
-
+    // Unmute the background music after 2s (to respect autoplay policies)
+    setTimeout(() => {
+      document.getElementById('bgMusic').muted = false;
+    }, 2000);
+  </script>
 </body>
 </html>
