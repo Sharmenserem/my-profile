@@ -14,7 +14,7 @@
       font-family: 'Orbitron', sans-serif;
       color: #fff;
       text-align: center;
-      background: #000;
+      background: #1a001f;
       overflow-x: hidden;
     }
 
@@ -24,14 +24,13 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
       z-index: -1;
-      opacity: 0.7;
+      opacity: 0.8;
     }
 
     h1 {
       margin-top: 40px;
       font-size: 3rem;
       text-shadow: 0 0 15px #ff69b4;
-      color: #ff69b4;
     }
 
     .search-bar {
@@ -103,11 +102,9 @@
     footer {
       margin-top: 40px;
       padding: 20px;
-      font-size: 1rem;
+      font-size: 0.9rem;
       background: rgba(0, 0, 0, 0.6);
-      border-top: 2px solid #ff69b4;
-      text-shadow: 0 0 10px #ff69b4;
-      color: #ffb6c1;
+      border-top: 1px solid #ff69b4;
     }
   </style>
 </head>
@@ -121,14 +118,16 @@
   </div>
 
   <div class="container" id="music-list">
-    <!-- Dynamic Music Cards -->
+    <!-- Music Cards -->
   </div>
 
   <!-- Footer -->
   <footer>
-    👑 Created with 💖 by <strong>Shammelody</strong><br>
-    📞 Contact: 254704322434<br>
-    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
+    Created by <strong>Sharmen (Shammelody)</strong><br>
+    Contact: <a href="tel:+254704322434" style="color: #ff69b4;">+254 704 322 434</a><br>
+    TikTok: <strong>@shammelody0</strong> |
+    Facebook: <strong>shammelody</strong> |
+    Instagram: <strong>@shammelody0</strong>
   </footer>
 
   <script>
@@ -201,27 +200,25 @@
     }
 
     async function fetchSongsFromYouTube(query) {
-      const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=5&key=${apiKey}`;
-
       try {
-        const response = await fetch(url);
-        const data = await response.json();
+        const response = await fetch(`/search?q=${encodeURIComponent(query + ' music')}`);
+        const items = await response.json();
 
-        if (!data.items || data.items.length === 0) {
+        if (!items || items.length === 0) {
           alert("No music found on YouTube.");
           return;
         }
 
-        const youtubeSongs = data.items.map(item => ({
+        const youtubeSongs = items.map(item => ({
           title: item.snippet.title,
+          mp3: '',
           mp4: `https://www.youtube.com/embed/${item.id.videoId}`
         }));
 
         renderYouTubeSongs(youtubeSongs);
       } catch (error) {
-        console.error("YouTube API Error:", error);
-        alert("Failed to fetch songs from YouTube.");
+        console.error("Error fetching YouTube:", error);
+        alert("Could not fetch YouTube results.");
       }
     }
 
@@ -254,5 +251,4 @@
     });
   </script>
 </body>
-  </html>
-  
+</html>
