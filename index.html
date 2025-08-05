@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shammelody - Music Downloader</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(#000000, #1f1f1f);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .header {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .header h1 {
+      color: #00ffc3;
+      font-size: 2.5rem;
+    }
+
+    .header p {
+      color: #bbb;
+    }
+
+    .search-box {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 10px;
+      border-radius: 10px 0 0 10px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #00ffc3;
+      border: none;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+    }
+
+    .results {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .track {
+      display: flex;
+      align-items: center;
+      background-color: #2c2c2c;
+      margin: 0.5rem;
+      padding: 1rem;
+      width: 80%;
+      border-radius: 10px;
+    }
+
+    .track img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+    }
+
+    .track .info {
+      flex-grow: 1;
+      margin-left: 1rem;
+    }
+
+    .track .info h3, .track .info p {
+      margin: 0;
+    }
+
+    .track a {
+      color: #00ffc3;
+      text-decoration: none;
+    }
+
+    /* 🎵 Background Animation 🎵 */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(#444 1px, transparent 1px);
+      background-size: 20px 20px;
+      animation: move 60s linear infinite;
+      opacity: 0.05;
+    }
+
+    @keyframes move {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg"></div>
+
+  <div class="header">
+    <h1>Shammelody</h1>
+    <p>Download free music and videos</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search for music...">
+    <button onclick="searchMusic()">Search</button>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <!-- 🎧 Silent Background Music (Pawa by Mbosso) -->
+  <audio autoplay loop volume="0.05">
+    <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    async function searchMusic() {
+      const query = document.getElementById(\"searchInput\").value;
+      const resultsDiv = document.getElementById(\"results\");
+      resultsDiv.innerHTML = \"Searching...\";
+
+      try {
+        const res = await fetch(`http://localhost:3000/music/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        if (!data.results.length) {
+          resultsDiv.innerHTML = \"<p>No results found.</p>\";
+          return;
+        }
+
+        resultsDiv.innerHTML = \"\";
+        data.results.forEach(track => {
+          const div = document.createElement(\"div\");
+          div.className = \"track\";
+          div.innerHTML = `
+            <img src=\"${track.thumbnail}\" alt=\"Thumbnail\">
+            <div class=\"info\">
+              <h3>${track.title}</h3>
+              <p>${track.artist}</p>
+            </div>
+            <a href=\"http://localhost:3000/music/download?url=${encodeURIComponent(track.stream_url)}\">Download</a>
+          `;
+          resultsDiv.appendChild(div);
+        });
+      } catch (e) {
+        console.error(e);
+        resultsDiv.innerHTML = \"<p>Something went wrong.</p>\";
+      }
+    }
+  </script>
+</body>
+  </html>
 
