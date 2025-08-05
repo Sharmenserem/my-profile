@@ -1,160 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shammelody Downloader - Documentation</title>
+  <meta charset="UTF-8">
+  <title>Shammelody Downloader</title>
   <style>
     body {
-      background: url('https://images.unsplash.com/photo-1601758123927-1986d407fdf5') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
       margin: 0;
       padding: 0;
-      line-height: 1.8;
-      font-size: 18px;
+      background: url('https://files.catbox.moe/5jkacz.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: white;
     }
     .container {
-      max-width: 1100px;
-      margin: 60px auto;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 50px 60px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    }
-    h1, h2, h3 {
-      color: #ffcc00;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 3rem;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 50px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 12px;
+      margin-top: 100px;
       text-align: center;
-      margin-bottom: 50px;
     }
-    h2 {
-      font-size: 2.2rem;
-      margin-top: 50px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 10px;
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
     }
-    h3 {
-      font-size: 1.7rem;
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #00ccff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0099cc;
+    }
+    .results {
       margin-top: 30px;
     }
-    p {
-      margin-bottom: 25px;
-      font-size: 1.1rem;
-    }
-    ul, ol {
-      margin-left: 25px;
-      margin-bottom: 25px;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-    code, pre {
-      background-color: #222;
-      color: #ffcc00;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 1rem;
-    }
-    a {
-      color: #ffd700;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .note, .tip {
-      background-color: #444;
-      border-left: 6px solid #ffcc00;
-      padding: 20px 25px;
-      border-radius: 8px;
-      margin: 25px 0;
-      font-size: 1rem;
-    }
-    hr {
-      margin: 50px 0;
-      border: none;
-      border-top: 1px solid #aaa;
-    }
-    .badge {
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: -30px;
-      color: #90ee90;
+    audio {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>🎧 Shammelody Downloader<br>Documentation</h1>
-    <div class="badge">Created by Sham · Nairobi, Kenya · Premium Media Tools</div>
+    <h1>🎶 Shammelody Downloader</h1>
+    <input type="text" id="search" placeholder="Search for music...">
+    <button onclick="searchMusic()">Search</button>
 
-    <p>Welcome to the Shammelody Downloader—your sleek and powerful tool for searching and playing music. This guide walks you through setup, customization, and how to make the most of this app. Whether you're an audiophile or a developer, you’ll be up and running in minutes.</p>
-
-    <h2>1. Requirements</h2>
-    <ul>
-      <li>PHP 8.1 or higher</li>
-      <li><code>cURL</code> and <code>file_get_contents</code> enabled</li>
-      <li>Access to a music API (like Deezer, Shazam, or a custom endpoint)</li>
-    </ul>
-
-    <h2>2. Ads Setup</h2>
-    <h3>Toggle Ads</h3>
-    <pre>
-define("ADS", true);  // To show ads
-define("ADS", false); // To hide ads
-    </pre>
-
-    <h3>Set Your Ad Code</h3>
-    <pre>
-$config = array(
-  "ad728" => '<img src="https://files.catbox.moe/470zh8.jpg">',
-  "ad468" => '<img src="https://files.catbox.moe/5jkacz.jpg">',
-  "ad300" => '<img src="https://files.catbox.moe/5jkacz.jpg">'
-);
-    </pre>
-
-    <h2>3. Music API Setup</h2>
-    <p>Shammelody uses a secure music API to retrieve track details. Make sure your API key is added properly:</p>
-    <h3>Insert API Settings</h3>
-    <pre>
-// Music API endpoint
-$music_api_url = "https://your-music-api.com/search?song=" . urlencode($song_query);
-
-// Headers
-$headers = array(
-  'x-api-host: your-api-host',
-  'x-api-key: AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo'  // Your API key
-);
-    </pre>
-
-    <h3>Define API Key Globally</h3>
-    <pre>
-define("MUSIC_API_KEY", "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo");
-    </pre>
-
-    <div class="note">
-      ⚠️ Be sure to test your API connection first. Use Postman or curl before launching the full site.
-    </div>
-
-    <h2>4. Installation Guide</h2>
-    <ol>
-      <li><strong>Upload Files:</strong> Place all files in your <code>public_html</code> or <code>htdocs</code> directory.</li>
-      <li><strong>Permissions:</strong> Ensure the files have correct read/write access.</li>
-      <li><strong>Configure:</strong> Edit <code>config.php</code> with your ad codes and music API credentials.</li>
-      <li><strong>Launch:</strong> Visit <code>https://yourdomain.com</code> to test.</li>
-    </ol>
-
-    <div class="tip">
-      💡 Tip: Blank pages usually mean API misconfigurations or disabled PHP extensions.
-    </div>
-
-    <hr />
-
-    <p>Need help? Reach out to Sham through the Sharmen Downloader page or your support portal. Thanks for choosing Shammelody Downloader—built for creative minds, by a creative mind!</p>
+    <div class="results" id="results"></div>
   </div>
+
+  <!-- OPTIONAL background music -->
+  <audio autoplay loop volume="0.1" style="display: none;">
+    <source src="https://files.catbox.moe/nucy2k.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    async function searchMusic() {
+      const query = document.getElementById('search').value;
+      const res = await fetch(`https://shammelody-api.onrender.com/music/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = "";
+
+      data.results.forEach(track => {
+        const item = document.createElement('div');
+        item.innerHTML = `
+          <h3>${track.title} - ${track.artist}</h3>
+          <img src="${track.thumbnail}" width="100" />
+          <br/>
+          <audio controls src="${track.stream_url}"></audio>
+          <br/>
+          <a href="${track.stream_url}" download><button>Download</button></a>
+        `;
+        resultsDiv.appendChild(item);
+      });
+    }
+  </script>
+
 </body>
 </html>
