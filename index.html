@@ -1,49 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shammelody Downloader</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sham Downloader - Free Music & Video Downloads</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 
-  <nav>
-    <a href="#">Home</a> |
-    <a href="#">About</a> |
-    <a href="#">Gallery</a> |
-    <a href="#">Contact</a>
-  </nav>
+    <header>
+        <h1>Sham Downloader</h1>
+        <p>Fast & Free Music and Video Downloads</p>
+    </header>
 
-  <header>
-    <h1>Shammelody Downloader</h1>
-    <p>Your source for downloading music, videos, and more!</p>
-  </header>
+    <div class="container">
+        <form id="downloadForm">
+            <label for="search">Search or Paste Video/Music URL:</label>
+            <input type="text" id="search" name="search" placeholder="Enter song name or paste video URL..." required>
+            <button type="submit">Download</button>
+        </form>
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
 
-  <main>
-    <h2>Audio Player</h2>
-    <audio controls>
-      <source src="audio.mp3" type="audio/mpeg">
-      Your browser does not support audio playback.
-    </audio>
+    <footer>
+        &copy; 2025 Sham Downloader. All rights reserved.
+    </footer>
 
-    <h2>Video Player</h2>
-    <video width="320" height="240" controls>
-      <source src="video.mp4" type="video/mp4">
-      Your browser does not support video playback.
-    </video>
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('search').value;
+            const resultDiv = document.getElementById('result');
 
-    <h2>Download Files</h2>
-    <ul>
-      <li><a href="audio.mp3" download>Download MP3</a></li>
-      <li><a href="video.mp4" download>Download MP4</a></li>
-      <li><a href="document.pdf" download>Download PDF</a></li>
-    </ul>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Shammelody Downloader</p>
-  </footer>
+            // Placeholder: Simulate result
+            resultDiv.innerHTML = `
+                <p>Searching for: <strong>${query}</strong></p>
+                <p><em>This is a placeholder. Backend functionality required for actual downloading.</em></p>
+            `;
+        });
+    </script>
 
 </body>
-</html>
-```
+  </html>
