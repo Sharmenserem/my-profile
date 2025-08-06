@@ -4,206 +4,252 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Stream & Download Music</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Poppins', sans-serif;
-      background: url('https://files.catbox.moe/5jkacz.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 40px 20px;
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      background: #000;
+      overflow-x: hidden;
     }
 
-    .glass {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 2rem;
-      width: 100%;
-      max-width: 900px;
-      box-shadow: 0 8px 32px rgba(255, 20, 147, 0.3);
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
+      z-index: -1;
+      opacity: 0.8;
     }
 
     h1 {
-      font-size: 2rem;
-      text-align: center;
-      color: #ff69b4;
-      margin-bottom: 10px;
+      margin-top: 40px;
+      font-size: 3rem;
+      text-shadow: 0 0 15px #0ff;
     }
 
-    p {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #f8f8f8;
+    .search-bar {
+      margin-top: 20px;
     }
 
-    .search {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    input[type="text"] {
-      padding: 0.8rem 1rem;
-      border-radius: 15px;
-      border: none;
+    .search-bar input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 2px solid #00ffff;
+      width: 250px;
       outline: none;
-      font-size: 1rem;
-      flex: 1;
-      min-width: 250px;
     }
 
-    button {
-      background: linear-gradient(to right, #ff69b4, #ff1493);
-      border: none;
+    .container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .music-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00ffff;
       border-radius: 15px;
-      color: white;
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
-      transition: transform 0.2s ease-in-out;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 0 15px #00ffff;
+      transition: transform 0.3s;
     }
 
-    button:hover {
+    .music-card:hover {
       transform: scale(1.05);
-    }
-
-    .results {
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.07);
-      padding: 1rem;
-      margin-bottom: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
-    }
-
-    .card h3 {
-      color: #fff;
-    }
-
-    .card p {
-      color: #ddd;
-      font-size: 0.9rem;
-    }
-
-    iframe {
-      width: 100%;
-      height: 200px;
-      margin: 1rem 0;
-      border-radius: 15px;
     }
 
     .buttons {
       display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-around;
+      margin-top: 15px;
     }
 
-    .buttons a button {
-      background: linear-gradient(to right, #ff69b4, #ff1493);
-      padding: 0.6rem 1.2rem;
-      border-radius: 15px;
-      border: none;
+    button {
+      padding: 10px 15px;
       font-weight: bold;
-      color: white;
+      border: none;
+      border-radius: 8px;
+      background: #00ffff;
+      color: #000;
       cursor: pointer;
-      animation: pulse 2s infinite;
+      transition: background 0.3s;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #ff69b4; }
-      50% { box-shadow: 0 0 20px #ff1493; }
-      100% { box-shadow: 0 0 10px #ff69b4; }
+    button:hover {
+      background: #00ccff;
     }
 
-    .pagination {
-      text-align: center;
-      margin-top: 2rem;
+    audio, video {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
     }
 
-    .pagination button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      margin: 0 5px;
+    iframe {
+      border-radius: 10px;
     }
 
-    @media (max-width: 600px) {
-      iframe {
-        height: 180px;
-      }
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 0.9rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #00ffff;
     }
   </style>
 </head>
 <body>
-  <div class="glass">
-    <h1>🎧 Shammelody</h1>
-    <p>Stream & Download your favorite songs — By <strong>Sharmen</strong></p>
-    
-    <div class="search">
-      <input type="text" id="searchInput" placeholder="Type a song name..." />
-      <button onclick="search()">🔍 Search</button>
-    </div>
 
-    <div class="results" id="results"></div>
-    <div class="pagination" id="pagination"></div>
+  <h1>🎵 Shammelody 🎵</h1>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
   </div>
 
+  <div class="container" id="music-list">
+    <!-- Dynamic Music Cards -->
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
+    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
+  </footer>
+
   <script>
-    let currentQuery = '';
-    let nextPageToken = '';
+    const songs = [
+      {
+        title: "Dream World",
+        mp3: "https://files.catbox.moe/y9q4ws.mp3",
+        mp4: "https://files.catbox.moe/5fe9sq.mp4"
+      },
+      {
+        title: "Ocean 🌊 Vibes",
+        mp3: "https://files.catbox.moe/1s4hgu.mp3",
+        mp4: "https://files.catbox.moe/vwbek0.mp4"
+      }
+    ];
 
-    async function search(page = '') {
-      const query = document.getElementById('searchInput').value;
-      currentQuery = query;
+    const originalSongs = [...songs];
+    const musicList = document.getElementById('music-list');
 
-      const response = await fetch(`http://localhost:3000/api/search?query=${encodeURIComponent(query)}&pageToken=${page}`);
-      const data = await response.json();
+    function renderSongs(songArray) {
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3>${song.title}</h3>
+          <audio controls src="${song.mp3}"></audio>
+          <div class="buttons">
+            <button onclick="window.open('${song.mp3}', '_blank')">Download MP3</button>
+            <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
+            <button onclick="streamSong('${song.mp4}')">Stream Video</button>
+          </div>
+          <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
+        `;
+        musicList.appendChild(card);
+      });
+    }
 
-      nextPageToken = data.nextPageToken || '';
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = '';
-
-      data.items.forEach(item => {
-        const videoId = item.id.videoId;
-        const title = item.snippet.title;
-        const channel = item.snippet.channelTitle;
-        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-
-        resultsDiv.innerHTML += `
-          <div class="card">
-            <h3>${title}</h3>
-            <p>By ${channel}</p>
-            <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-            <div class="buttons">
-              <a href="${videoUrl}" target="_blank"><button>▶ Watch on YouTube</button></a>
-              <a href="http://localhost:3000/api/download?url=${videoUrl}"><button>⬇ Download MP3</button></a>
-            </div>
+    function renderYouTubeSongs(songArray) {
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3>${song.title}</h3>
+          <iframe width="100%" height="200" src="${song.mp4}" frameborder="0" allowfullscreen></iframe>
+          <div class="buttons">
+            <button onclick="window.open('${song.mp4}', '_blank')">Watch on YouTube</button>
           </div>
         `;
+        musicList.appendChild(card);
       });
-
-      const pagination = document.getElementById('pagination');
-      pagination.innerHTML = nextPageToken
-        ? `<button onclick="search('${nextPageToken}')">Next ⏩</button>`
-        : '';
     }
+
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      if (query === '') {
+        renderSongs(originalSongs);
+        return;
+      }
+
+      const filtered = songs.filter(song => song.title.toLowerCase().includes(query));
+
+      if (filtered.length > 0) {
+        renderSongs(filtered);
+      } else {
+        fetchSongsFromYouTube(query);
+      }
+    }
+
+    async function fetchSongsFromYouTube(query) {
+      const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=5&key=${apiKey}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+          alert("No music found on YouTube.");
+          return;
+        }
+
+        const youtubeSongs = data.items.map(item => ({
+          title: item.snippet.title,
+          mp3: '',
+          mp4: `https://www.youtube.com/embed/${item.id.videoId}`
+        }));
+
+        renderYouTubeSongs(youtubeSongs);
+      } catch (error) {
+        console.error("YouTube API Error:", error);
+        alert("Failed to fetch songs from YouTube.");
+      }
+    }
+
+    function streamSong(videoUrl) {
+      const videoEl = document.querySelector(`[src="${videoUrl}"]`);
+      if (videoEl.style.display === 'none') {
+        videoEl.style.display = 'block';
+        videoEl.play();
+      } else {
+        videoEl.pause();
+        videoEl.style.display = 'none';
+      }
+    }
+
+    // Add Reset Button
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSongs(songs);
+
+      const resetBtn = document.createElement('button');
+      resetBtn.textContent = 'Reset';
+      resetBtn.style.marginLeft = '10px';
+      resetBtn.onclick = () => {
+        document.getElementById('searchInput').value = '';
+        renderSongs(originalSongs);
+      };
+
+      const searchBar = document.querySelector('.search-bar');
+      if (searchBar) {
+        searchBar.appendChild(resetBtn);
+      }
+    });
   </script>
 </body>
 </html>
