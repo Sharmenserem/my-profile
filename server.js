@@ -1,5 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { exec } = require('child_process');
 const { google } = require('googleapis');
 
@@ -7,9 +9,11 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
 
-const YOUTUBE_API_KEY = 'AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo';
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
+// Search endpoint
 app.get('/api/search', async (req, res) => {
   const { query, pageToken } = req.query;
   const youtube = google.youtube({
@@ -33,9 +37,9 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
+// MP3 download endpoint
 app.get('/api/download', (req, res) => {
   const videoUrl = req.query.url;
-
   if (!videoUrl) return res.status(400).send('Missing video URL');
 
   res.setHeader('Content-Disposition', 'attachment; filename="shammelody.mp3"');
@@ -53,7 +57,8 @@ app.get('/api/download', (req, res) => {
   });
 });
 
+// Start server
 app.listen(port, () => {
-  console.log(`✅ Server running at http://localhost:${port}`);
+  console.log(`✅ Shammelody server running at http://localhost:${port}`);
 });
-    
+        
