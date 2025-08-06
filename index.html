@@ -3,45 +3,282 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shammelody Music Downloader</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Shammelody - Stream & Download Music</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00ffff" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+      background: #000;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
+      z-index: -1;
+      opacity: 0.8;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 3rem;
+      text-shadow: 0 0 15px #0ff;
+    }
+
+    .search-bar {
+      margin-top: 20px;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 2px solid #00ffff;
+      width: 250px;
+      outline: none;
+    }
+
+    .container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .music-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00ffff;
+      border-radius: 15px;
+      padding: 20px;
+      width: 340px;
+      box-shadow: 0 0 15px #00ffff;
+      transition: transform 0.3s;
+    }
+
+    .music-card:hover {
+      transform: scale(1.05);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background: #00ffff;
+      color: #000;
+      cursor: pointer;
+      margin: 5px;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    button:hover {
+      background: #00ccff;
+      transform: scale(1.1);
+    }
+
+    audio, video, iframe {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 0.9rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #00ffff;
+    }
+
+    .owner-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .owner-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #00ffff;
+      box-shadow: 0 0 10px #00ffff;
+      transition: transform 0.3s;
+    }
+
+    .owner-info img:hover {
+      transform: scale(1.1);
+    }
+
+    .owner-info span {
+      font-size: 0.95rem;
+      color: #0ff;
+      font-weight: bold;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      background: #111;
+      border: 1px solid #00ffff;
+      color: #0ff;
+    }
+
+    .pagination button.active {
+      background: #00ffff;
+      color: #000;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎵 Shammelody Music Downloader 🎵</h1>
-    <p class="tagline">Created by <span class="owner-circle">Sharmen</span></p>
 
-    <input type="text" id="searchInput" placeholder="Search for a song..."/>
-    <button onclick="searchMusic()">🔍 Search</button>
+  <h1>🎵 Shammelody 🎵</h1>
 
-    <div id="results"></div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
+    <button onclick="filterSongs()">Search</button>
+    <button onclick="resetSearch()">Reset</button>
   </div>
 
+  <div class="container" id="music-list"></div>
+
+  <div class="pagination" id="pagination"></div>
+
+  <footer>
+    Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
+    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
+  </footer>
+
   <script>
-    async function searchMusic() {
-      const query = document.getElementById("searchInput").value;
-      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-      const data = await res.json();
+    const musicList = document.getElementById('music-list');
+    const pagination = document.getElementById('pagination');
+    let nextPageToken = '';
+    let prevPageToken = '';
+    let currentQuery = '';
 
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
+    function resetSearch() {
+      document.getElementById('searchInput').value = '';
+      musicList.innerHTML = '';
+      pagination.innerHTML = '';
+    }
 
-      data.forEach(video => {
-        const videoElem = document.createElement("div");
-        videoElem.className = "video";
-
-        videoElem.innerHTML = `
-          <img src="${video.thumbnail}" class="thumbnail"/>
-          <div class="info">
-            <h3>${video.title}</h3>
-            <div class="owner-circle">${video.channelTitle}</div>
-            <audio controls src="/api/stream?videoId=${video.id}"></audio>
-            <a class="download-btn" href="/api/download?videoId=${video.id}">⬇️ Download</a>
+    function renderYouTubeSongs(songArray) {
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3>${song.title}</h3>
+          <div class="owner-info">
+            <img src="${song.ownerAvatar}" alt="Owner">
+            <span>${song.owner}</span>
+          </div>
+          <iframe src="${song.mp4}" height="200" frameborder="0" allowfullscreen></iframe>
+          <div class="buttons">
+            <button onclick="window.open('${song.videoLink}', '_blank')">Watch on YouTube</button>
+            <button onclick="downloadMP3('${song.videoId}')">Download MP3</button>
           </div>
         `;
-        resultsDiv.appendChild(videoElem);
+        musicList.appendChild(card);
+      });
+    }
+
+    async function fetchSongsFromYouTube(query, pageToken = '') {
+      const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
+      const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&maxResults=5&pageToken=${pageToken}&key=${apiKey}`;
+
+      try {
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        nextPageToken = data.nextPageToken || '';
+        prevPageToken = data.prevPageToken || '';
+
+        const songs = await Promise.all(data.items.map(async item => {
+          const channelId = item.snippet.channelId;
+          const channelInfo = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${apiKey}`);
+          const channelData = await channelInfo.json();
+          return {
+            title: item.snippet.title,
+            videoId: item.id.videoId,
+            videoLink: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+            mp4: `https://www.youtube.com/embed/${item.id.videoId}`,
+            owner: item.snippet.channelTitle,
+            ownerAvatar: channelData.items?.[0]?.snippet?.thumbnails?.default?.url || 'https://www.youtube.com/img/desktop/yt_1200.png'
+          };
+        }));
+
+        renderYouTubeSongs(songs);
+        renderPagination();
+      } catch (err) {
+        alert("Failed to fetch YouTube songs.");
+        console.error(err);
+      }
+    }
+
+    function renderPagination() {
+      pagination.innerHTML = '';
+      if (prevPageToken) {
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = '⬅ Prev';
+        prevBtn.onclick = () => fetchSongsFromYouTube(currentQuery, prevPageToken);
+        pagination.appendChild(prevBtn);
+      }
+      if (nextPageToken) {
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next ➡';
+        nextBtn.onclick = () => fetchSongsFromYouTube(currentQuery, nextPageToken);
+        pagination.appendChild(nextBtn);
+      }
+    }
+
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query) {
+        currentQuery = query;
+        fetchSongsFromYouTube(query);
+      }
+    }
+
+    function downloadMP3(videoId) {
+      window.open(`/api/download?videoId=${videoId}`, '_blank');
+    }
+
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(() => {
+          console.log("✅ Service Worker Registered");
+        }).catch(err => {
+          console.error("Service Worker error:", err);
+        });
       });
     }
   </script>
 </body>
-</html>
+  </html>
+    
