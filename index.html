@@ -4,110 +4,205 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Stream & Download Music</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
       background: url('https://files.catbox.moe/5jkacz.jpg') no-repeat center center fixed;
       background-size: cover;
       color: white;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
     }
 
-    .container {
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.7);
-      max-width: 800px;
-      margin: auto;
-      border-radius: 1rem;
-      box-shadow: 0 0 30px #ff69b4;
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 8px 32px rgba(255, 20, 147, 0.3);
     }
 
-    input {
-      width: 80%;
-      padding: 0.7rem;
-      border-radius: 0.5rem;
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      color: #ff69b4;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #f8f8f8;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      padding: 0.8rem 1rem;
+      border-radius: 15px;
       border: none;
       outline: none;
       font-size: 1rem;
+      flex: 1;
+      min-width: 250px;
     }
 
     button {
-      padding: 0.7rem 1.5rem;
-      margin-top: 1rem;
-      font-size: 1rem;
+      background: linear-gradient(to right, #ff69b4, #ff1493);
       border: none;
-      border-radius: 1rem;
-      background: hotpink;
+      border-radius: 15px;
       color: white;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 0 10px hotpink;
-      transition: transform 0.3s;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
+      transition: transform 0.2s ease-in-out;
     }
 
     button:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     .results {
       margin-top: 2rem;
     }
 
-    .video-card {
-      background: rgba(255, 255, 255, 0.1);
-      margin: 1rem 0;
+    .card {
+      background: rgba(255, 255, 255, 0.07);
       padding: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 15px pink;
+      margin-bottom: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+    }
+
+    .card h3 {
+      color: #fff;
+    }
+
+    .card p {
+      color: #ddd;
+      font-size: 0.9rem;
     }
 
     iframe {
       width: 100%;
-      border-radius: 0.5rem;
+      height: 200px;
+      margin: 1rem 0;
+      border-radius: 15px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .buttons a button {
+      background: linear-gradient(to right, #ff69b4, #ff1493);
+      padding: 0.6rem 1.2rem;
+      border-radius: 15px;
+      border: none;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #ff69b4; }
+      50% { box-shadow: 0 0 20px #ff1493; }
+      100% { box-shadow: 0 0 10px #ff69b4; }
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .pagination button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      margin: 0 5px;
+    }
+
+    @media (max-width: 600px) {
+      iframe {
+        height: 180px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎵 Shammelody Downloader</h1>
-    <p>Created by <strong>Sharmen</strong></p>
-    <input type="text" id="searchInput" placeholder="Search for songs..." />
-    <button onclick="search()">Search</button>
+  <div class="glass">
+    <h1>🎧 Shammelody</h1>
+    <p>Stream & Download your favorite songs — By <strong>Sharmen</strong></p>
+    
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Type a song name..." />
+      <button onclick="search()">🔍 Search</button>
+    </div>
 
     <div class="results" id="results"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
 
   <script>
-    async function search(pageToken = '') {
+    let currentQuery = '';
+    let nextPageToken = '';
+
+    async function search(page = '') {
       const query = document.getElementById('searchInput').value;
-      const res = await fetch(`http://localhost:3000/api/search?query=${encodeURIComponent(query)}&pageToken=${pageToken}`);
-      const data = await res.json();
-      const results = document.getElementById('results');
-      results.innerHTML = '';
+      currentQuery = query;
+
+      const response = await fetch(`http://localhost:3000/api/search?query=${encodeURIComponent(query)}&pageToken=${page}`);
+      const data = await response.json();
+
+      nextPageToken = data.nextPageToken || '';
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
 
       data.items.forEach(item => {
         const videoId = item.id.videoId;
         const title = item.snippet.title;
         const channel = item.snippet.channelTitle;
-        const thumbnail = item.snippet.thumbnails.medium.url;
         const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-        results.innerHTML += `
-          <div class="video-card">
+        resultsDiv.innerHTML += `
+          <div class="card">
             <h3>${title}</h3>
             <p>By ${channel}</p>
             <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-            <br/>
-            <a href="${videoUrl}" target="_blank"><button>🎥 Watch on YouTube</button></a>
-            <a href="http://localhost:3000/api/download?url=${videoUrl}"><button>⬇️ Download MP3</button></a>
+            <div class="buttons">
+              <a href="${videoUrl}" target="_blank"><button>▶ Watch on YouTube</button></a>
+              <a href="http://localhost:3000/api/download?url=${videoUrl}"><button>⬇ Download MP3</button></a>
+            </div>
           </div>
         `;
       });
 
-      if (data.nextPageToken) {
-        results.innerHTML += `<button onclick="search('${data.nextPageToken}')">Next Page ⏩</button>`;
-      }
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = nextPageToken
+        ? `<button onclick="search('${nextPageToken}')">Next ⏩</button>`
+        : '';
     }
   </script>
 </body>
