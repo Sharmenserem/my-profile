@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shammelody - Secure Login & Music</title>
 
-  <!-- Google Font (Music Player) -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   
-  <!-- Font Awesome for Login Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
@@ -27,10 +25,88 @@
       text-align: center;
       background: #000;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* -------------------------------------- */
+    /* --- PRELOADER STYLES --- */
+    /* -------------------------------------- */
+    #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 2000; /* Highest z-index */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    /* Loader Animation CSS */
+    .preloader-box { 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 450px; 
+        height: 62px; 
+    }
+    .loader {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        margin: 0 6px;
+        border-radius: 50%;
+    }
+    .loader:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #00ffc7;
+        animation: loader-animate 4s linear infinite;
+    }
+    .loader:nth-child(1):before {
+        animation-delay: 0s;
+    }
+    .loader:nth-child(2):before {
+        animation-delay: 0.2s;
+    }
+    .loader:nth-child(4):before {
+        animation-delay: 0.4s;
+    }
+    .loader:nth-child(5):before {
+        animation-delay: 0.6s;
+    }
+    @keyframes loader-animate {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(0.5);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    .load {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #45f3ff;
+        margin: 0 15px;
     }
     
     /* -------------------------------------- */
-    /* --- LOGIN OVERLAY STYLES (DEFAULT VISIBLE) --- */
+    /* --- LOGIN OVERLAY STYLES --- */
     /* -------------------------------------- */
     #login-overlay {
       position: fixed;
@@ -38,20 +114,41 @@
       left: 0;
       width: 100%;
       height: 100%;
-      display: flex; /* Make it visible by default */
+      display: none; 
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      /* NEW BACKGROUND IMAGE */
       background: url('https://genuine-cyan-i0s0nj4yeb.edgeone.app/IMG-20251021-WA0099.jpg') no-repeat center center/cover; 
     }
+    
+    /* Start Button Prompt */
+    #start-prompt {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1001; 
+    }
+    #start-prompt button {
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        background: #45f3ff;
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
 
     /* Container for the Form */
     .box {
       position: relative;
       width: 380px;
       height: 420px;
-      background: rgba(28, 28, 28, 0.85); /* Slightly transparent dark background */
+      background: rgba(28, 28, 28, 0.85); 
       border-radius: 8px;
       overflow: hidden;
     }
@@ -87,7 +184,7 @@
     .login {
       position: absolute;
       inset: 5px;
-      background: rgba(40, 41, 45, 0.95); /* Slightly transparent inner box */
+      background: rgba(40, 41, 45, 0.95); 
       padding: 50px 40px;
       border-radius: 8px;
       z-index: 10;
@@ -123,19 +220,21 @@
       border-bottom: 1px solid #45f3ff;
     }
 
-    /* Submit Button */
-    .loginBx input[type="submit"] {
+    /* Submit Button (using the music player's button style) */
+    .loginBx button {
       width: 100%;
-      background: #45f3ff;
+      padding: 10px 15px;
+      font-weight: bold;
       border: none;
-      padding: 10px;
-      border-radius: 4px;
-      font-weight: 600;
+      border-radius: 8px;
+      background: #45f3ff; 
+      color: #000;
       cursor: pointer;
       transition: background 0.3s;
+      margin-top: 5px;
     }
 
-    .loginBx input[type="submit"]:hover {
+    .loginBx button:hover {
       background: #25d4e6;
     }
 
@@ -158,28 +257,53 @@
     }
 
     /* -------------------------------------- */
-    /* --- MUSIC PLAYER STYLES (DEFAULT HIDDEN) --- */
+    /* --- MUSIC PLAYER STYLES --- */
     /* -------------------------------------- */
     
     #main-content {
-      display: none; /* Initially hide the music player content */
+      display: none; 
       width: 100%;
+      padding: 0 15px; /* Added padding */
     }
 
     .music-bg::before {
       content: "";
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
+      /* --- REVERTED TO FAST-LOADING GIF --- */
       background: url('https://assets.codepen.io/1538474/stars-bg.gif') no-repeat center center/cover;
       z-index: -1;
       opacity: 0.8;
+      transition: opacity 0.3s;
     }
 
-    h1 {
-      margin-top: 40px;
-      font-size: 3rem;
-      text-shadow: 0 0 15px #0ff;
+    h1 { 
+        margin: 0; 
+        text-transform: uppercase; 
+        font-size: 250px; 
+        background-image: url('https://url.bwmxmd.online/Adams.9nhekucy.jpg'); 
+        background-position: center; 
+        background-size: cover; 
+        -webkit-background-clip: text; 
+        color: transparent; 
+        line-height: 1; 
+        padding-top: 20px; /* Reduced padding-top */
+        overflow: hidden; 
     }
+
+    /* Media query for smaller screens to make H1 more readable */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 15vw; 
+            padding-top: 20px;
+        }
+    }
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 12vw; 
+        }
+    }
+
 
     .search-bar {
       margin-top: 20px;
@@ -210,7 +334,7 @@
       padding: 20px;
       width: 300px;
       box-shadow: 0 0 15px #00ffff;
-      transition: transform 0.3s;
+      transition: transform 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
 
     .music-card:hover {
@@ -254,44 +378,413 @@
       font-size: 0.9rem;
       background: rgba(0, 0, 0, 0.6);
       border-top: 1px solid #00ffff;
+      transition: background 0.3s, border-color 0.3s;
     }
+
+    /* -------------------------------------- */
+    /* --- SOCIAL MEDIA ICON STYLES --- */
+    /* -------------------------------------- */
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        margin: 30px auto;
+        padding: 10px 0;
+    }
+    
+    .social-icons a {
+        text-decoration: none; 
+        color: inherit; 
+    }
+
+    .icon {
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-direction: column; 
+      position: relative; 
+      z-index: 2; 
+      margin: 0 20px; 
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #28292d;
+      box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .icon span {
+        display: block;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        border-radius: 50%;
+        color: #fff;
+        line-height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .icon .tooltip {
+        position: absolute;
+        top: 0;
+        font-size: 1rem;
+        background: #fff;
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 5px;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        transform: translateY(-80px);
+    }
+
+    .icon:hover .tooltip {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(-70px);
+    }
+    
+    .icon.facebook:hover .tooltip { background: #1877F2; color: #fff; }
+    .icon.youtube:hover .tooltip { background: #FF0000; color: #fff; }
+    .icon.tiktok:hover .tooltip { background: #69C9D0; color: #000; }
+
+    .icon.facebook:hover span {
+        color: #1877F2; 
+    }
+    .icon.youtube:hover span {
+        color: #FF0000; 
+    }
+    .icon.tiktok:hover span {
+        color: #69C9D0; 
+    }
+
+    /* -------------------------------------- */
+    /* --- GEMINI REVIEW STYLES (NEW) --- */
+    /* -------------------------------------- */
+    .review-output {
+      margin-top: 10px;
+      padding: 10px;
+      min-height: 40px; 
+      border-top: 1px solid rgba(70, 243, 255, 0.3);
+      text-align: left;
+      font-size: 0.9em;
+      color: #99FFFF;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .loading-spinner {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #45f3ff;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 5px;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* -------------------------------------- */
+    /* --- NEW PORTFOLIO HEADER STYLES --- */
+    /* -------------------------------------- */
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid #45f3ff;
+      position: relative;
+      z-index: 100;
+    }
+
+    .logo a {
+      text-decoration: none;
+      font-size: 1.8rem;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .logo a span {
+      color: #45f3ff;
+    }
+
+    .list-darkmode-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .list-darkmode-menu ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    .list-darkmode-menu ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    .list-darkmode-menu ul li a:hover {
+      color: #45f3ff;
+    }
+
+    /* Dark Mode Toggle Styles */
+    .mode {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+    .mode input {
+      display: none;
+    }
+    .mode .fa-sun {
+      display: none; /* Hidden by default (since dark is default) */
+    }
+    .mode .fa-moon {
+      display: block; /* Visible by default */
+      color: #45f3ff;
+    }
+    .mode input:checked ~ .fa-sun {
+      display: block;
+      color: #f39c12;
+    }
+    .mode input:checked ~ .fa-moon {
+      display: none;
+    }
+    
+    /* Hamburger Menu Styles */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+    }
+    .hamburger .bar {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    
+    /* Profile Pic Style */
+    .user-profile-image {
+      margin-top: 30px;
+    }
+    .user-profile-image img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid #45f3ff;
+      box-shadow: 0 0 20px #45f3ff;
+    }
+
+    /* Responsive Styles for Header */
+    @media (max-width: 768px) {
+      .list-darkmode-menu ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px; /* Height of header */
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px 0;
+      }
+      .list-darkmode-menu.active ul {
+        display: flex;
+      }
+      .hamburger {
+        display: flex;
+      }
+      /* Hamburger Animation */
+      .list-darkmode-menu.active .hamburger .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      .list-darkmode-menu.active .hamburger .bar:nth-child(2) {
+        opacity: 0;
+      }
+      .list-darkmode-menu.active .hamburger .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+    }
+
+    /* -------------------------------------- */
+    /* --- NEW LIGHT MODE STYLES --- */
+    /* -------------------------------------- */
+    body.light-mode {
+      background: #f0f2f5;
+      color: #1c1e21;
+    }
+    body.light-mode .music-bg::before {
+      opacity: 0.3; /* Make background image fainter */
+    }
+    body.light-mode .header-container {
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom-color: #007bff;
+    }
+    body.light-mode .logo a {
+      color: #1c1e21;
+    }
+    body.light-mode .logo a span {
+      color: #007bff;
+    }
+    body.light-mode .list-darkmode-menu ul li a {
+      color: #1c1e21;
+    }
+    body.light-mode .list-darkmode-menu ul li a:hover {
+      color: #007bff;
+    }
+    body.light-mode .hamburger .bar {
+      background: #1c1e21;
+    }
+    body.light-mode .user-profile-image img {
+      border-color: #007bff;
+      box-shadow: 0 0 20px #007bff;
+    }
+    body.light-mode .music-card {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: #007bff;
+      box-shadow: 0 0 15px #007bff;
+    }
+    body.light-mode button {
+      background: #007bff;
+      color: #fff;
+    }
+    body.light-mode button:hover {
+      background: #0056b3;
+    }
+    body.light-mode .loginBx button { /* Keep login button vibrant */
+       background: #45f3ff;
+       color: #000;
+    }
+    body.light-mode .social-icons .icon {
+      background: #fff;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+    body.light-mode .social-icons .icon span {
+      color: #555;
+    }
+    body.light-mode footer {
+      background: rgba(255, 255, 255, 0.8);
+      border-top-color: #007bff;
+    }
+    body.light-mode .review-output {
+        color: #0056b3;
+        border-top-color: #007bff;
+    }
+    body.light-mode .loading-spinner {
+        border-top-color: #007bff;
+    }
+    
   </style>
 </head>
 <body class="music-bg">
 
-  <!-- -------------------------------------- -->
-  <!-- --- MUSIC PLAYER CONTENT (MAIN SITE) --- -->
-  <!-- -------------------------------------- -->
-  <div id="main-content">
-    <h1>🎵 Shammelody 🎵</h1>
+  <div id="preloader">
+    <audio id="preloader-music" loop src="https://url.bwmxmd.online/Adams.rtfxe5mn.mp3"></audio>
 
-    <!-- Search Bar -->
+    <div class="preloader-box">
+        <div class="loader"><span></span></div>
+        <div class="loader"><span></span></div>
+        <div class="load">loading...</div>
+        <div class="loader"><i></i></div>
+        <div class="loader"><i></i></div>
+    </div>
+  </div>
+  <div id="main-content">
+
+    <div class="header-container">
+        <div class="logo">
+            <a href="#"><span>Sharmen</span> Serem</a>
+        </div>
+        <div class="list-darkmode-menu">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Skills</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <label class="mode">
+                <input type="checkbox" checked="checked" id="darkModeButton" /> 
+                <i class="fa-solid fa-sun"></i> <i class="fa-solid fa-moon"></i> </label>
+            <button class="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </button>
+        </div>
+    </div>
+    
+    <div class="user-profile-image">
+        <img src="https://picsum.photos/150" alt="Sharmen Serem">
+    </div>
+
+
+    <h1>SHAMMELODY</h1>
+
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
       <button style="margin-left: 10px;" onclick="document.getElementById('searchInput').value = ''; renderSongs(originalSongs);">Reset</button>
     </div>
 
     <div class="container" id="music-list">
-      <!-- Dynamic Music Cards -->
+      </div>
+    
+    <div class="social-icons">
+      <a href="https://www.facebook.com/shammelody0" target="_blank">
+        <div class="icon facebook"> 
+          <div class="tooltip">Facebook</div> 
+          <span><i class="fa-brands fa-facebook"></i></span> 
+        </div> 
+      </a>
+      
+      <a href="https://youtube.com/@shammelody?si=pZMbELGJNNEX6kc1" target="_blank">
+        <div class="icon youtube"> 
+          <div class="tooltip">Youtube</div> 
+          <span><i class="fa-brands fa-youtube"></i></span> 
+        </div> 
+      </a>
+      
+      <a href="https://tiktok.com/@shammelody0" target="_blank">
+        <div class="icon tiktok"> 
+          <div class="tooltip">Tiktok</div> 
+          <span><i class="fa-brands fa-tiktok"></i></span> 
+        </div>
+      </a>
     </div>
-
-    <!-- Footer -->
     <footer>
-      Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
-      TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
     </footer>
   </div>
 
 
-  <!-- -------------------------------------- -->
-  <!-- --- MODERN ANIMATED LOGIN FORM (SPLASH SCREEN) --- -->
-  <!-- -------------------------------------- -->
   <div id="login-overlay">
     
-    <!-- Background Music for Login Screen -->
-    <audio id="bg-music" loop autoplay src="https://extended-ivory-somjl8jnsw.edgeone.app/Omah%20Lay%20-%20I’m%20a%20mess%20(Choir%20Version)%20by%20[Urban%20Chords]%20-%20Crayne%20Music%20(youtube).mp3"></audio>
+    <audio id="bg-music" loop src=""></audio>
 
-    <div class="box">
+    <div id="start-prompt">
+        <button onclick="startSite()">Start Site & Play Music</button>
+    </div>
+
+
+    <div class="box" style="display: none;" id="login-box"> 
       <div class="login">
         <div class="loginBx">
           <h2>
@@ -300,8 +793,7 @@
           <input type="text" placeholder="Username">
           <input type="password" placeholder="Password">
           
-          <!-- Call loginSuccess function on click to dismiss login and show site -->
-          <input type="submit" value="Sign in" onclick="loginSuccess(event)"/>
+          <button onclick="loginSuccess(event)">Sign in</button>
           
           <div class="group">
             <a href="#">Forgot Password</a>
@@ -311,38 +803,21 @@
       </div>
     </div>
   </div>
-  <!-- -------------------------------------- -->
+
 
   <script>
-    // Ensure the background music is auto-played immediately if the browser allows it
-    window.onload = function() {
-        document.getElementById('bg-music').play().catch(error => {
-            // Browsers often block autoplay without user interaction.
-            console.log("Autoplay blocked. User interaction required to start music.");
-            // You could show an "Enter Site" button here if necessary.
-        });
-    }
+    // --- GEMINI API SETUP ---
+    const apiKey = ""; // Leave as-is; provided by the environment
+    const model = 'gemini-2.5-flash-preview-09-2025';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    function loginSuccess(e) {
-      // Prevent the form from trying to submit/refresh the page
-      e.preventDefault(); 
-      
-      // 1. Hide the login overlay
-      document.getElementById('login-overlay').style.display = 'none';
-      
-      // 2. Show the main music player content
-      document.getElementById('main-content').style.display = 'block';
-      
-      // 3. Stop the login background music
-      document.getElementById('bg-music').pause(); 
-      document.getElementById('bg-music').currentTime = 0;
+    // --- GLOBAL ELEMENTS & CONSTANTS ---
+    const preloader = document.getElementById('preloader');
+    const preloaderMusic = document.getElementById('preloader-music');
+    const loginOverlay = document.getElementById('login-overlay');
+    const bgMusic = document.getElementById('bg-music');
+    const musicList = document.getElementById('music-list');
 
-      // 4. Ensure the music list is rendered (as it might be empty if the script ran before DOMContentLoaded)
-      renderSongs(originalSongs);
-    }
-    
-    
-    // --- ORIGINAL MUSIC PLAYER JAVASCRIPT ---
     const songs = [
       {
         title: "Dream World",
@@ -357,12 +832,133 @@
     ];
 
     const originalSongs = [...songs];
-    const musicList = document.getElementById('music-list');
+
+
+    // --- UTILITY FUNCTIONS ---
+
+    // Utility for robust API calls with exponential backoff
+    async function exponentialBackoffFetch(url, options, retries = 5, delay = 1000) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+                if (response.ok) {
+                    return response;
+                }
+                if (response.status === 429 && i < retries - 1) { // Too Many Requests
+                    await new Promise(resolve => setTimeout(resolve, delay * (2 ** i) + Math.random() * 500));
+                    continue;
+                }
+                throw new Error(`API request failed with status ${response.status}`);
+            } catch (error) {
+                if (i === retries - 1) throw error;
+                await new Promise(resolve => setTimeout(resolve, delay * (2 ** i) + Math.random() * 500));
+            }
+        }
+    }
+
+
+    // --- GEMINI API FEATURE: REVIEW GENERATOR ---
+
+    async function generateReview(songTitle, reviewElementId) {
+        const reviewEl = document.getElementById(reviewElementId);
+        if (!reviewEl) return;
+
+        // 1. Set loading state
+        reviewEl.style.display = 'block';
+        reviewEl.innerHTML = '<span class="loading-spinner"></span> Generating critique...';
+
+        const systemPrompt = "You are a highly enthusiastic and modern music critic. Write a positive, exciting review (3-4 sentences maximum) for the following song, focusing on its emotional impact and production quality. Use a fresh, engaging tone.";
+        const userQuery = `Write a short review for the song titled: "${songTitle}"`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: {
+                parts: [{ text: systemPrompt }]
+            },
+        };
+
+        try {
+            // 2. Call the Gemini API
+            const response = await exponentialBackoffFetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "Oops! Couldn't generate a review for this song. Try again!";
+            
+            // 3. Display the result
+            reviewEl.innerHTML = `**Critic's Corner:** ${text}`;
+
+        } catch (error) {
+            console.error("Gemini API Error:", error);
+            reviewEl.innerHTML = 'Error fetching review. API connection failed.';
+        }
+    }
+
+
+    // --- PRELOADER & LOGIN FLOW ---
+
+    window.onload = function() {
+        if (preloaderMusic) {
+            preloaderMusic.play().catch(error => {
+                console.log("Preloader music autoplay failed, user interaction needed.", error);
+            });
+        }
+        
+        setTimeout(hidePreloader, 4000); 
+    };
+    
+    function hidePreloader() {
+        if (preloader) {
+            preloader.style.display = 'none';
+        }
+        if (preloaderMusic) {
+            preloaderMusic.pause();
+            preloaderMusic.currentTime = 0;
+        }
+        if (loginOverlay) {
+            loginOverlay.style.display = 'flex';
+        }
+    }
+
+    function startSite() {
+        document.getElementById('start-prompt').style.display = 'none';
+        document.getElementById('login-box').style.display = 'block';
+        
+        // --- MODIFIED: Only play music if a src is set ---
+        if (bgMusic.src && bgMusic.src !== window.location.href) {
+            bgMusic.play().catch(error => {
+                console.log("Login music failed to play automatically.", error);
+            });
+        }
+    }
+
+    function loginSuccess(e) {
+      e.preventDefault(); 
+      
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      
+      // --- MODIFIED: Only pause if a src is set ---
+      if (bgMusic.src && bgMusic.src !== window.location.href) {
+          bgMusic.pause(); 
+          bgMusic.currentTime = 0;
+      }
+
+      renderSongs(originalSongs);
+    }
+    
+    
+    // --- MUSIC RENDERING FUNCTIONS (UPDATED) ---
 
     function renderSongs(songArray) {
       if (!musicList) return;
       musicList.innerHTML = '';
       songArray.forEach(song => {
+        // Create unique ID for the review output element
+        const uniqueId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
         const card = document.createElement('div');
         card.className = 'music-card';
         card.innerHTML = `
@@ -373,6 +969,10 @@
             <button onclick="window.open('${song.mp4}', '_blank')">Download MP4</button>
             <button onclick="streamSong('${song.mp4}')">Stream Video</button>
           </div>
+          <button style="margin-top: 15px; width: 100%;" onclick="generateReview('${song.title}', '${uniqueId}')">
+            ✨ Generate Review
+          </button>
+          <div id="${uniqueId}" class="review-output" style="display:none;"></div>
           <video id="video-${song.title.replace(/\s/g, '')}" controls style="display:none;" src="${song.mp4}"></video>
         `;
         musicList.appendChild(card);
@@ -383,6 +983,8 @@
       if (!musicList) return;
       musicList.innerHTML = '';
       songArray.forEach(song => {
+        // Create unique ID for the review output element
+        const uniqueId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
         const card = document.createElement('div');
         card.className = 'music-card';
         card.innerHTML = `
@@ -391,6 +993,10 @@
           <div class="buttons">
             <button onclick="window.open('${song.mp4}', '_blank')">Watch on YouTube</button>
           </div>
+          <button style="margin-top: 15px; width: 100%;" onclick="generateReview('${song.title}', '${uniqueId}')">
+            ✨ Generate Review
+          </button>
+          <div id="${uniqueId}" class="review-output" style="display:none;"></div>
         `;
         musicList.appendChild(card);
       });
@@ -409,12 +1015,36 @@
       if (filtered.length > 0) {
         renderSongs(filtered);
       } else {
-        // Disabled YouTube fetching to ensure the code remains runnable 
-        // without an active API key, per previous instruction.
-        // fetchSongsFromYouTube(query); 
-        console.log("No local songs found. YouTube search is disabled in this example.");
+        fetchSongsFromYouTube(query); 
       }
     }
+    
+    async function fetchSongsFromYouTube(query) {
+      const youtubeApiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo"; 
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=5&key=${youtubeApiKey}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+          console.log("No music found on YouTube.");
+          return;
+        }
+
+        const youtubeSongs = data.items.map(item => ({
+          title: item.snippet.title,
+          mp3: '',
+          mp4: `https://www.youtube.com/embed/${item.id.videoId}`
+        }));
+
+        renderYouTubeSongs(youtubeSongs);
+      } catch (error) {
+        console.error("YouTube API Error:", error);
+        console.log("Failed to fetch songs from YouTube. Check your API key and browser console.");
+      }
+    }
+
 
     function streamSong(videoUrl) {
       const videoEl = document.querySelector(`[src="${videoUrl}"]`);
@@ -426,6 +1056,36 @@
         videoEl.style.display = 'none';
       }
     }
+    
+    
+    // --- NEW SCRIPT FOR HEADER ---
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // Hamburger Menu Logic
+        const hamburger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.list-darkmode-menu');
+        
+        if(hamburger && menu) {
+            hamburger.addEventListener('click', () => {
+                menu.classList.toggle('active');
+            });
+        }
+
+        // Dark Mode Toggle Logic
+        const darkModeButton = document.getElementById('darkModeButton');
+        if (darkModeButton) {
+            darkModeButton.addEventListener('change', () => {
+                // The input is "checked" for dark mode.
+                // If it's NOT checked, we add "light-mode".
+                if (darkModeButton.checked) {
+                    document.body.classList.remove('light-mode');
+                } else {
+                    document.body.classList.add('light-mode');
+                }
+            });
+        }
+    });
     
   </script>
 </body>
