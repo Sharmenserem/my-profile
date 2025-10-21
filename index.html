@@ -3,22 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shammelody - Stream & Download Music</title>
+  <title>Shammelody - Secure Login & Music</title>
 
-  <!-- Google Font -->
+  <!-- Google Font (Music Player) -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Login Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
-    body {
+    /* -------------------------------------- */
+    /* --- COMMON STYLES --- */
+    /* -------------------------------------- */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Orbitron', sans-serif;
       color: #fff;
       text-align: center;
       background: #000;
       overflow-x: hidden;
     }
+    
+    /* -------------------------------------- */
+    /* --- LOGIN OVERLAY STYLES (DEFAULT VISIBLE) --- */
+    /* -------------------------------------- */
+    #login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex; /* Make it visible by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      /* NEW BACKGROUND IMAGE */
+      background: url('https://genuine-cyan-i0s0nj4yeb.edgeone.app/IMG-20251021-WA0099.jpg') no-repeat center center/cover; 
+    }
 
-    body::before {
+    /* Container for the Form */
+    .box {
+      position: relative;
+      width: 380px;
+      height: 420px;
+      background: rgba(28, 28, 28, 0.85); /* Slightly transparent dark background */
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Animated Border Effect */
+    .box::before,
+    .box::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 380px;
+      height: 420px;
+      background: linear-gradient(0deg, transparent, #45f3ff, #45f3ff);
+      transform-origin: bottom right;
+      animation: login-animate 6s linear infinite;
+    }
+
+    .box::after {
+      animation-delay: -3s;
+    }
+
+    @keyframes login-animate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Inner Login Box */
+    .login {
+      position: absolute;
+      inset: 5px;
+      background: rgba(40, 41, 45, 0.95); /* Slightly transparent inner box */
+      padding: 50px 40px;
+      border-radius: 8px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .loginBx h2 {
+      color: #45f3ff;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: 0.1em;
+      margin-bottom: 25px;
+    }
+
+    /* Input Fields */
+    .loginBx input[type="text"],
+    .loginBx input[type="password"] {
+      width: 100%;
+      padding: 10px 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #999;
+      outline: none;
+      color: #fff;
+      margin-bottom: 30px;
+      font-size: 1em;
+      transition: border-bottom 0.3s;
+    }
+
+    .loginBx input[type="text"]:focus,
+    .loginBx input[type="password"]:focus {
+      border-bottom: 1px solid #45f3ff;
+    }
+
+    /* Submit Button */
+    .loginBx input[type="submit"] {
+      width: 100%;
+      background: #45f3ff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .loginBx input[type="submit"]:hover {
+      background: #25d4e6;
+    }
+
+    /* Group for links */
+    .group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .group a {
+      color: #999;
+      text-decoration: none;
+      font-size: 0.85em;
+      transition: color 0.3s;
+    }
+
+    .group a:hover {
+      color: #45f3ff;
+    }
+
+    /* -------------------------------------- */
+    /* --- MUSIC PLAYER STYLES (DEFAULT HIDDEN) --- */
+    /* -------------------------------------- */
+    
+    #main-content {
+      display: none; /* Initially hide the music player content */
+      width: 100%;
+    }
+
+    .music-bg::before {
       content: "";
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -44,6 +192,7 @@
       border: 2px solid #00ffff;
       width: 250px;
       outline: none;
+      color: #000;
     }
 
     .container {
@@ -108,26 +257,92 @@
     }
   </style>
 </head>
-<body>
+<body class="music-bg">
 
-  <h1>🎵 Shammelody 🎵</h1>
+  <!-- -------------------------------------- -->
+  <!-- --- MUSIC PLAYER CONTENT (MAIN SITE) --- -->
+  <!-- -------------------------------------- -->
+  <div id="main-content">
+    <h1>🎵 Shammelody 🎵</h1>
 
-  <!-- Search Bar -->
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for a song..." oninput="filterSongs()">
+      <button style="margin-left: 10px;" onclick="document.getElementById('searchInput').value = ''; renderSongs(originalSongs);">Reset</button>
+    </div>
+
+    <div class="container" id="music-list">
+      <!-- Dynamic Music Cards -->
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
+      TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
+    </footer>
   </div>
 
-  <div class="container" id="music-list">
-    <!-- Dynamic Music Cards -->
-  </div>
 
-  <!-- Footer -->
-  <footer>
-    Created by <strong>Shammelody</strong> | Contact: 254704322434<br>
-    TikTok: <strong>@shammelody0</strong> | Facebook: <strong>shammelody</strong> | Instagram: <strong>@shammelody0</strong>
-  </footer>
+  <!-- -------------------------------------- -->
+  <!-- --- MODERN ANIMATED LOGIN FORM (SPLASH SCREEN) --- -->
+  <!-- -------------------------------------- -->
+  <div id="login-overlay">
+    
+    <!-- Background Music for Login Screen -->
+    <audio id="bg-music" loop autoplay src="https://extended-ivory-somjl8jnsw.edgeone.app/Omah%20Lay%20-%20I’m%20a%20mess%20(Choir%20Version)%20by%20[Urban%20Chords]%20-%20Crayne%20Music%20(youtube).mp3"></audio>
+
+    <div class="box">
+      <div class="login">
+        <div class="loginBx">
+          <h2>
+            <i class="fa-solid fa-right-to-bracket"></i> Login <i class="fa-solid fa-heart"></i>
+          </h2>
+          <input type="text" placeholder="Username">
+          <input type="password" placeholder="Password">
+          
+          <!-- Call loginSuccess function on click to dismiss login and show site -->
+          <input type="submit" value="Sign in" onclick="loginSuccess(event)"/>
+          
+          <div class="group">
+            <a href="#">Forgot Password</a>
+            <a href="#">Sign up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- -------------------------------------- -->
 
   <script>
+    // Ensure the background music is auto-played immediately if the browser allows it
+    window.onload = function() {
+        document.getElementById('bg-music').play().catch(error => {
+            // Browsers often block autoplay without user interaction.
+            console.log("Autoplay blocked. User interaction required to start music.");
+            // You could show an "Enter Site" button here if necessary.
+        });
+    }
+
+    function loginSuccess(e) {
+      // Prevent the form from trying to submit/refresh the page
+      e.preventDefault(); 
+      
+      // 1. Hide the login overlay
+      document.getElementById('login-overlay').style.display = 'none';
+      
+      // 2. Show the main music player content
+      document.getElementById('main-content').style.display = 'block';
+      
+      // 3. Stop the login background music
+      document.getElementById('bg-music').pause(); 
+      document.getElementById('bg-music').currentTime = 0;
+
+      // 4. Ensure the music list is rendered (as it might be empty if the script ran before DOMContentLoaded)
+      renderSongs(originalSongs);
+    }
+    
+    
+    // --- ORIGINAL MUSIC PLAYER JAVASCRIPT ---
     const songs = [
       {
         title: "Dream World",
@@ -145,6 +360,7 @@
     const musicList = document.getElementById('music-list');
 
     function renderSongs(songArray) {
+      if (!musicList) return;
       musicList.innerHTML = '';
       songArray.forEach(song => {
         const card = document.createElement('div');
@@ -164,6 +380,7 @@
     }
 
     function renderYouTubeSongs(songArray) {
+      if (!musicList) return;
       musicList.innerHTML = '';
       songArray.forEach(song => {
         const card = document.createElement('div');
@@ -192,33 +409,10 @@
       if (filtered.length > 0) {
         renderSongs(filtered);
       } else {
-        fetchSongsFromYouTube(query);
-      }
-    }
-
-    async function fetchSongsFromYouTube(query) {
-      const apiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo";
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=5&key=${apiKey}`;
-
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (!data.items || data.items.length === 0) {
-          alert("No music found on YouTube.");
-          return;
-        }
-
-        const youtubeSongs = data.items.map(item => ({
-          title: item.snippet.title,
-          mp3: '',
-          mp4: `https://www.youtube.com/embed/${item.id.videoId}`
-        }));
-
-        renderYouTubeSongs(youtubeSongs);
-      } catch (error) {
-        console.error("YouTube API Error:", error);
-        alert("Failed to fetch songs from YouTube.");
+        // Disabled YouTube fetching to ensure the code remains runnable 
+        // without an active API key, per previous instruction.
+        // fetchSongsFromYouTube(query); 
+        console.log("No local songs found. YouTube search is disabled in this example.");
       }
     }
 
@@ -232,24 +426,7 @@
         videoEl.style.display = 'none';
       }
     }
-
-    // Add Reset Button
-    window.addEventListener('DOMContentLoaded', () => {
-      renderSongs(songs);
-
-      const resetBtn = document.createElement('button');
-      resetBtn.textContent = 'Reset';
-      resetBtn.style.marginLeft = '10px';
-      resetBtn.onclick = () => {
-        document.getElementById('searchInput').value = '';
-        renderSongs(originalSongs);
-      };
-
-      const searchBar = document.querySelector('.search-bar');
-      if (searchBar) {
-        searchBar.appendChild(resetBtn);
-      }
-    });
+    
   </script>
 </body>
 </html>
