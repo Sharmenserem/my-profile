@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shammelody | Next-Gen Audio Experience</title>
+
+  <!-- Google Fonts: Inter fits the clean, modern Instagram brand aesthetic perfectly -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* -------------------------------------- */
+    /* --- INSTAGRAM BRAND VARIABLE SYSTEM -- */
+    /* -------------------------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Instagram Dark Mode Palette (True Black / Flat Surfaces) */
+      --bg-dark: #000000;
+      --card-dark: #121212;
+      --border-dark: #262626;
+      --text-main: #f5f5f5;
+      --text-muted: #a8a8a8;
+      
+      /* Instagram Light Mode Palette */
+      --bg-light: #ffffff;
+      --card-light: #ffffff;
+      --border-light: #dbdbdb;
+      --text-main-light: #262626;
+      --text-muted-light: #737373;
+
+      /* Instagram Signature Colors */
+      --ig-blue: #0095f6;
+      --ig-blue-hover: #1877f2;
+      --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Minimalist Instagram Background */
+    .mesh-background {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -2;
+      background-color: var(--bg-dark);
+    }
+
+    /* -------------------------------------- */
+    /* --- INSTAGRAM STYLED PRELOADER ------- */
+    /* -------------------------------------- */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .ig-loader-icon {
+      font-size: 3.5rem;
+      background: var(--ig-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: cameraPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes cameraPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .load-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* -------------------------------------- */
+    /* --- INSTAGRAM LOGIN PORTAL ----------- */
+    /* -------------------------------------- */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-dark);
+    }
+
+    #start-prompt {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-dark);
+      z-index: 5002;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      background: var(--ig-blue);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--ig-blue-hover);
+    }
+
+    .glass-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      padding: 40px;
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+    }
+
+    .glass-card .ig-logo-text {
+      font-size: 2.2rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 35px;
+      color: var(--text-main);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      outline: none;
+      color: #fff;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      border-color: #a8a8a8;
+    }
+
+    /* -------------------------------------- */
+    /* --- APPLICATION MAIN NAVIGATION ------ */
+    /* -------------------------------------- */
+    #main-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15%;
+      height: 60px;
+      border-bottom: 1px solid var(--border-dark);
+      background-color: var(--bg-dark);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 1.3rem;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.7;
+    }
+
+    /* -------------------------------------- */
+    /* --- INSTAGRAM PROFILE USER BLOCK ---- */
+    /* -------------------------------------- */
+    .hero-section {
+      max-width: 935px;
+      margin: 0 auto;
+      padding: 40px 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .profile-avatar {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      flex-shrink: 0;
+      padding: 4px;
+      border-radius: 50%;
+      background: var(--ig-gradient);
+    }
+
+    .profile-avatar .avatar-wrapper {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      padding: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-info {
+      text-align: left;
+    }
+
+    .profile-info-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero-section h1 {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text-main);
+    }
+
+    .verified-badge {
+      color: var(--ig-blue);
+      font-size: 1.1rem;
+    }
+
+    .hero-section p {
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .profile-bio-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 400;
+      white-space: pre-line;
+    }
+
+    /* -------------------------------------- */
+    /* --- INTERACTIVE GRID & ENGINE SEARCH - */
+    /* -------------------------------------- */
+    .search-container-block {
+      max-width: 935px;
+      margin: 24px auto 0;
+      padding: 0 20px;
+    }
+
+    .search-wrapper {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 8px 16px;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #262626;
+      color: var(--text-main);
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn-secondary:hover {
+      background: #363636;
+    }
+
+    /* Tab Feed Header Switch */
+    .feed-tabs-header {
+      max-width: 935px;
+      margin: 30px auto 0;
+      border-top: 1px solid var(--border-dark);
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    .tab-item {
+      padding: 18px 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-top: 1px solid var(--text-main);
+      cursor: pointer;
+    }
+
+    /* Track Matrix Grid Layer */
+    .track-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 935px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    .music-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .music-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    audio {
+      width: 100%;
+      margin-bottom: 16px;
+      height: 36px;
+    }
+
+    /* Clean Square Action Grid Layout */
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .action-btn {
+      padding: 8px 2px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #262626;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .action-btn:hover {
+      background: #363636;
+    }
+
+    .action-btn i {
+      font-size: 0.85rem;
+    }
+
+    .action-btn.btn-ig-cta {
+      background: var(--ig-blue);
+      color: #ffffff;
+    }
+
+    .action-btn.btn-ig-cta:hover {
+      background: var(--ig-blue-hover);
+    }
+
+    .critic-engine-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .theme-trigger {
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    /* -------------------------------------- */
+    /* --- LIGHT MODE SPECIFICATION GRID ---- */
+    /* -------------------------------------- */
+    body.light-mode {
+      background-color: var(--bg-light);
+      color: var(--text-main-light);
+    }
+    body.light-mode .mesh-background {
+      background-color: var(--bg-light);
+    }
+    body.light-mode .navbar,
+    body.light-mode #preloader,
+    body.light-mode #login-overlay,
+    body.light-mode .glass-card {
+      background-color: var(--bg-light);
+      border-color: var(--border-light);
+    }
+    body.light-mode .logo,
+    body.light-mode .nav-links a,
+    body.light-mode .hero-section h1,
+    body.light-mode .hero-section p,
+    body.light-mode .tab-item,
+    body.light-mode .music-card h3,
+    body.light-mode .glass-card .ig-logo-text {
+      color: var(--text-main-light);
+    }
+    body.light-mode .tab-item {
+      border-top-color: var(--text-main-light);
+    }
+    body.light-mode .hero-section,
+    body.light-mode .feed-tabs-header,
+    body.light-mode .music-card,
+    body.light-mode .input-field {
+      border-color: var(--border-light);
+    }
+    body.light-mode .input-field {
+      background: #fafafa;
+      color: #000;
+    }
+    body.light-mode .search-input {
+      background: #efefef;
+      color: #000;
+    }
+    body.light-mode .music-card {
+      background: var(--card-light);
+    }
+    body.light-mode .profile-avatar .avatar-wrapper {
+      background: var(--bg-light);
+    }
+    body.light-mode .profile-bio-text {
+      color: var(--text-muted-light);
+    }
+    body.light-mode .action-btn {
+      background: #efefef;
+      color: var(--text-main-light);
+    }
+    body.light-mode .action-btn:hover {
+      background: #dbdbdb;
+    }
+    body.light-mode .action-btn.btn-ig-cta {
+      background: var(--ig-blue);
+      color: #fff;
+    }
+    body.light-mode .critic-engine-box {
+      background: #fafafa;
+      border-color: var(--border-light);
+      color: var(--text-muted-light);
+    }
+
+    /* Footer Social Dock */
+    .social-dock {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 40px 0 60px;
+      border-top: 1px solid var(--border-dark);
+      max-width: 935px;
+      margin: 0 auto;
+    }
+    body.light-mode .social-dock {
+      border-top-color: var(--border-light);
+    }
+
+    .dock-item {
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .dock-item:hover { color: var(--text-main); }
+    body.light-mode .dock-item:hover { color: var(--text-main-light); }
+
+    /* Responsive Setup */
+    @media (max-width: 768px) {
+      .hero-section {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+      }
+      .profile-info {
+        text-align: center;
+      }
+      .profile-info-header {
+        justify-content: center;
+      }
+      .track-grid {
+        grid-template-columns: 1fr;
+      }
+      .navbar {
+        padding: 0 5%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mesh-background"></div>
+
+  <!-- INSTAGRAM BRANDED PRELOADER ENGINE -->
+  <div id="preloader">
+    <div class="ig-loader-icon">
+      <i class="fa-brands fa-instagram"></i>
+    </div>
+    <div class="load-text">Shammelody</div>
+  </div>
+
+  <!-- AUTH / GATEWAY SYSTEM LAYER -->
+  <div id="login-overlay">
+    <audio id="bg-music" loop src="https://files.catbox.moe/1s4hgu.mp3"></audio>
+
+    <div id="start-prompt">
+      <button class="btn-primary" onclick="startSite()">Initialize Secure Feed</button>
+    </div>
+
+    <div class="glass-card" style="display: none;" id="login-box">
+      <div class="ig-logo-text">Shammelody</div>
+      <input type="text" class="input-field" placeholder="Phone number, username, or email">
+      <input type="password" class="input-field" placeholder="Password">
+      <button class="btn-primary" style="width:100%; margin-top: 8px;" onclick="loginSuccess(event)">Log In</button>
+    </div>
+  </div>
+
+  <!-- MAIN INSTAGRAM-STYLED FEED INTERACTIVE SPACE -->
+  <div id="main-content">
+    <nav class="navbar">
+      <div class="logo">Shammelody</div>
+      <ul class="nav-links">
+        <li><a href="#" onclick="resetEngine()"><i class="fa-solid fa-house"></i></a></li>
+        <li><a href="https://instagram.com/_shammelody" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+        <li>
+          <div class="theme-trigger" onclick="toggleFramework()">
+            <i class="fa-solid fa-circle-half-stroke"></i>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Profile Header Block Area -->
+    <div class="hero-section">
+      <div class="profile-avatar">
+        <div class="avatar-wrapper">
+          <img src="https://picsum.photos/300" alt="Sharmen Serem Profile">
+        </div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-info-header">
+          <h1>_shammelody</h1>
+          <i class="fa-solid fa-circle-check verified-badge" title="Verified Creator Node"></i>
+          <button class="btn-secondary" onclick="window.open('https://instagram.com/_shammelody', '_blank')">Follow</button>
+        </div>
+        <p>Sharmen Serem</p>
+        <div class="profile-bio-text">
+          Digital Audio Architect & Songwriter
+          Direct Vault Storage • Studio Reference Monitoring • AI Critic Module
+          limuli01 Node Connected
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Section Component -->
+    <div class="search-container-block">
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search tracks or YouTube cloud..." oninput="filterSongs()">
+        <button class="btn-secondary" onclick="resetEngine()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Layout Navigation Tab Lines -->
+    <div class="feed-tabs-header">
+      <div class="tab-item" onclick="resetEngine()">
+        <i class="fa-solid fa-table-cells"></i> Tracks
+      </div>
+    </div>
+
+    <!-- Media Storage Track Feed Grid -->
+    <div class="track-grid" id="music-list"></div>
+
+    <!-- Footer Dock Icons Navigation Layout -->
+    <div class="social-dock">
+      <a href="https://instagram.com/_shammelody" target="_blank" class="dock-item">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.facebook.com/shammelody0" target="_blank" class="dock-item">
+        <i class="fa-brands fa-facebook-f"></i>
+      </a>
+      <a href="https://youtube.com/@shammelody?si=pZMbELGJNNEX6kc1" target="_blank" class="dock-item">
+        <i class="fa-brands fa-youtube"></i>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // --- API STRINGS CONFIGURATIONS ---
+    const apiKey = "bwm_live_b85f9f75afaf5f4c3660fe53518c241f27dbfb1d45938e62"; 
+    const model = 'gemini-2.5-flash-preview-09-2025';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const preloader = document.getElementById('preloader');
+    const loginOverlay = document.getElementById('login-overlay');
+    const bgMusic = document.getElementById('bg-music');
+    const musicList = document.getElementById('music-list');
+
+    // Central Data Inventory List Arrays
+    const songs = [
+      {
+        title: "Dream World",
+        mp3: "https://files.catbox.moe/y9q4ws.mp3",
+        mp4: "https://files.catbox.moe/5fe9sq.mp4"
+      },
+      {
+        title: "Ocean Vibes",
+        mp3: "https://files.catbox.moe/1s4hgu.mp3",
+        mp4: "https://files.catbox.moe/vwbek0.mp4"
+      }
+    ];
+
+    const originalSongs = [...songs];
+
+    // --- LIFE CYCLE LOGIC LOOPS ---
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        if (preloader) preloader.style.display = 'none';
+        if (loginOverlay) loginOverlay.style.display = 'flex';
+      }, 2500); 
+    });
+
+    function startSite() {
+      document.getElementById('start-prompt').style.display = 'none';
+      document.getElementById('login-box').style.display = 'block';
+      bgMusic.play().catch(e => console.log("Audio pipeline muted rules handled.", e));
+    }
+
+    function loginSuccess(e) {
+      e.preventDefault();
+      loginOverlay.style.display = 'none';
+      const main = document.getElementById('main-content');
+      main.style.display = 'block';
+      setTimeout(() => main.style.opacity = '1', 50);
+      bgMusic.pause();
+      renderSongs(originalSongs);
+    }
+
+    // --- STREAM DOWNLOAD ENGINE PIPELINES ---
+    async function directDownload(e, url, filename) {
+      const targetBtn = e.currentTarget || e.target;
+      const initialText = targetBtn.innerHTML;
+      targetBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i>";
+      
+      try {
+        const response = await fetch(url);
+        if(!response.ok) throw new Error("Stream connection failed");
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = blobUrl;
+        anchor.download = filename || "track.mp3";
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.target = '_blank';
+        anchor.download = filename;
+        anchor.click();
+      } finally {
+        targetBtn.innerHTML = initialText;
+      }
+    }
+
+    // --- RENDER COMPONENT METHODS ---
+    function renderSongs(songArray) {
+      if (!musicList) return;
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const cleanId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3><i class="fa-solid fa-music"></i> ${song.title}</h3>
+          <audio controls src="${song.mp3}"></audio>
+          <div class="action-row">
+            <button class="action-btn" onclick="directDownload(event, '${song.mp3}', '${song.title}.mp3')">
+              <i class="fa-solid fa-music"></i> MP3
+            </button>
+            <button class="action-btn" onclick="directDownload(event, '${song.mp4}', '${song.title}.mp4')">
+              <i class="fa-solid fa-video"></i> MP4
+            </button>
+            <button class="action-btn btn-ig-cta" onclick="generateReview('${song.title}', '${cleanId}')">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI
+            </button>
+          </div>
+          <div id="${cleanId}" class="critic-engine-box" style="display:none;"></div>
+        `;
+        musicList.appendChild(card);
+      });
+    }
+
+    function renderYouTubeSongs(songArray) {
+      if (!musicList) return;
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const cleanId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.innerHTML = `
+          <h3><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> ${song.title}</h3>
+          <iframe width="100%" height="160" src="${song.mp4}" frameborder="0" allowfullscreen style="border-radius:4px; margin-bottom:12px; border:1px solid var(--border-dark);"></iframe>
+          <div class="action-row" style="grid-template-columns: repeat(2, 1fr);">
+            <button class="action-btn" onclick="window.open('${song.mp4}', '_blank')">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> YouTube
+            </button>
+            <button class="action-btn btn-ig-cta" onclick="generateReview('${song.title}', '${cleanId}')">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI
+            </button>
+          </div>
+          <div id="${cleanId}" class="critic-engine-box" style="display:none;"></div>
+        `;
+        musicList.appendChild(card);
+      });
+    }
+
+    // --- CLOUD FILTER ROUTER SYSTEM METHODS ---
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      if (!query) {
+        renderSongs(originalSongs);
+        return;
+      }
+
+      const matched = songs.filter(s => s.title.toLowerCase().includes(query));
+
+      if (matched.length > 0) {
+        renderSongs(matched);
+      } else {
+        fetchSongsFromYouTube(query);
+      }
+    }
+
+    async function fetchSongsFromYouTube(query) {
+      const youtubeApiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo"; 
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=6&key=${youtubeApiKey}`;
+
+      try {
+        musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading Feed From Cloud...</div>';
+        
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+          musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-muted);">No cloud feed indices matching search parameters.</div>';
+          return;
+        }
+
+        const youtubeSongs = data.items.map(item => ({
+          title: item.snippet.title,
+          mp3: '',
+          mp4: `https://www.youtube.com/embed/${item.id.videoId}`
+        }));
+
+        renderYouTubeSongs(youtubeSongs);
+      } catch (error) {
+        console.error("Cloud Error:", error);
+        musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#ff0000;"><i class="fa-solid fa-triangle-exclamation"></i> Network connection timed out.</div>';
+      }
+    }
+
+    // --- ARTIFICIAL MUSIC CRITIQUE LOGIC ---
+    async function generateReview(songTitle, elementId) {
+      const output = document.getElementById(elementId);
+      output.style.display = "block";
+      output.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Generating review metrics...";
+
+      const promptPayload = {
+        contents: [{ parts: [{ text: `Provide a highly artistic, sophisticated, positive 3-sentence critique for a track titled "${songTitle}".` }] }],
+        systemInstruction: { parts: [{ text: "You are an elite, poetic music theorist." }] }
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(promptPayload)
+        });
+        const data = await response.json();
+        output.innerText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Review generated.";
+      } catch (e) {
+        output.innerText = "Critique engine modules offline.";
+      }
+    }
+
+    // --- UTILITIES MANAGEMENT OVERLAYS ---
+    function resetEngine() {
+      document.getElementById('searchInput').value = '';
+      renderSongs(originalSongs);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if(e.key === "Enter" && document.getElementById('login-box').style.display === "block") {
+        loginSuccess(e);
+      }
+    });
+
+    function toggleFramework() {
+      document.body.classList.toggle('light-mode');
+    }
+  </script>
+</body>
+</html>
