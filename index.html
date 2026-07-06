@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shammelody | Premium Studio Vault</title>
+
+  <!-- Premium Web Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Iconic Font Framework -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* -------------------------------------- */
+    /* --- TECHNICAL INDUSTRIAL VARIABLES --- */
+    /* -------------------------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Studio Dark / Obsidian Slate */
+      --studio-bg: #0b0c0f;
+      --studio-surface: #13151a;
+      --studio-surface-elevated: #1a1d24;
+      --studio-border: rgba(255, 255, 255, 0.05);
+      --studio-border-focus: rgba(245, 158, 11, 0.4);
+      --text-prime: #f8fafc;
+      --text-sec: #94a3b8;
+      
+      /* Solar Accent System */
+      --solar-core: #f59e0b;
+      --solar-glow: linear-gradient(135deg, #f59e0b, #ef4444);
+      --action-neutral: rgba(255, 255, 255, 0.03);
+      --action-hover: rgba(255, 255, 255, 0.08);
+
+      /* Studio Light Mode Translation */
+      --light-bg: #f1f5f9;
+      --light-surface: #ffffff;
+      --light-surface-elevated: #f8fafc;
+      --light-border: rgba(15, 23, 42, 0.08);
+      --light-text-prime: #0f172a;
+      --light-text-sec: #64748b;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-prime);
+      background-color: var(--studio-bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* -------------------------------------- */
+    /* --- MINIMALIST MATTE PRELOADER ------- */
+    /* -------------------------------------- */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--studio-bg);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .studio-spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--studio-border);
+      border-top-color: var(--solar-core);
+      border-radius: 50%;
+      animation: spinEngine 0.8s linear infinite;
+    }
+
+    @keyframes spinEngine {
+      to { transform: rotate(360deg); }
+    }
+
+    .load-indicator {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--text-sec);
+    }
+
+    /* -------------------------------------- */
+    /* --- CONSOLE INTERFACE GATEWAY (AUTH) - */
+    /* -------------------------------------- */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: var(--studio-bg);
+    }
+
+    #start-prompt {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--studio-bg);
+      z-index: 5002;
+    }
+
+    .btn-terminal {
+      padding: 14px 28px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid var(--solar-core);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--solar-core);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-terminal:hover {
+      background: var(--solar-core);
+      color: var(--studio-bg);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+
+    .console-card {
+      background: var(--studio-surface);
+      border: 1px solid var(--studio-border);
+      border-radius: 8px;
+      padding: 36px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .console-card h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .console-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--studio-border);
+      border-radius: 6px;
+      outline: none;
+      color: #fff;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .console-input:focus {
+      border-color: var(--solar-core);
+    }
+
+    /* -------------------------------------- */
+    /* --- ARCHITECTURAL CORE NAVIGATION ---- */
+    /* -------------------------------------- */
+    #main-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 6%;
+      height: 70px;
+      border-bottom: 1px solid var(--studio-border);
+      background: rgba(11, 12, 15, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .brand-core {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-prime);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-core span {
+      color: var(--solar-core);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sec);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-prime);
+    }
+
+    /* -------------------------------------- */
+    /* --- TECHNICAL WORKSPACE HERO SECTION - */
+    /* -------------------------------------- */
+    .studio-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 4% 40px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .avatar-deck {
+      position: relative;
+      width: 130px;
+      height: 130px;
+    }
+
+    .avatar-deck img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--studio-border);
+    }
+
+    .avatar-deck::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; right: -6px;
+      width: 100%; height: 100%;
+      border: 1px solid var(--solar-core);
+      border-radius: 12px;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .profile-details h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .node-badge {
+      font-size: 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--studio-border-focus);
+      color: var(--solar-core);
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .meta-bio {
+      color: var(--text-sec);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 650px;
+    }
+
+    /* -------------------------------------- */
+    /* --- INTEGRATED CONTROLS & SEARCH ----- */
+    /* -------------------------------------- */
+    .control-strip {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-console {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .search-console i {
+      position: absolute;
+      left: 16px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sec);
+      font-size: 0.9rem;
+    }
+
+    .search-console input {
+      width: 100%;
+      padding: 12px 16px 12px 46px;
+      background: var(--studio-surface);
+      border: 1px solid var(--studio-border);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .search-console input:focus {
+      border-color: var(--solar-core);
+      background: var(--studio-surface-elevated);
+    }
+
+    .btn-action-dim {
+      padding: 12px 20px;
+      background: var(--studio-surface);
+      border: 1px solid var(--studio-border);
+      color: var(--text-prime);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-action-dim:hover {
+      background: var(--studio-surface-elevated);
+    }
+
+    /* -------------------------------------- */
+    /* --- STUDIO AUDIO VAULT GRID SYSTEM --- */
+    /* -------------------------------------- */
+    .vault-layout-header {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 0 4% 12px;
+      border-bottom: 1px solid var(--studio-border);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-sec);
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 4% 60px;
+    }
+
+    .studio-card {
+      background: var(--studio-surface);
+      border: 1px solid var(--studio-border);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: border-color 0.25s ease;
+    }
+
+    .studio-card:hover {
+      border-color: var(--studio-border-focus);
+    }
+
+    .track-meta-block h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-prime);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Cleaned Audio Interface Elements */
+    audio {
+      width: 100%;
+      margin-bottom: 20px;
+      height: 40px;
+      filter: invert(0.05);
+    }
+
+    .studio-action-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .studio-btn {
+      padding: 10px 4px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+      border: 1px solid var(--studio-border);
+      background: var(--action-neutral);
+      color: var(--text-prime);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .studio-btn:hover {
+      background: var(--action-hover);
+      border-color: var(--text-sec);
+    }
+
+    .studio-btn i {
+      font-size: 0.8rem;
+    }
+
+    .studio-btn.btn-accent-solid {
+      background: var(--solar-core);
+      border-color: var(--solar-core);
+      color: var(--studio-bg);
+    }
+
+    .studio-btn.btn-accent-solid:hover {
+      background: #df8e0a;
+      border-color: #df8e0a;
+    }
+
+    /* Technical Intelligent Critic Box */
+    .critic-response-panel {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px dashed var(--studio-border);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--text-sec);
+    }
+
+    /* -------------------------------------- */
+    /* --- SYSTEM LIGHT FRAMEWORK TRANSLATION */
+    /* -------------------------------------- */
+    body.light-mode {
+      background-color: var(--light-bg);
+      color: var(--light-text-prime);
+    }
+    body.light-mode #preloader,
+    body.light-mode #login-overlay,
+    body.light-mode .console-card {
+      background-color: var(--light-bg);
+    }
+    body.light-mode .navbar {
+      background: rgba(241, 245, 249, 0.8);
+      border-bottom-color: var(--light-border);
+    }
+    body.light-mode .brand-core,
+    body.light-mode .profile-details h1,
+    body.light-mode .track-meta-block h3,
+    body.light-mode .console-card h2,
+    body.light-mode .btn-action-dim {
+      color: var(--light-text-prime);
+    }
+    body.light-mode .meta-bio,
+    body.light-mode .vault-layout-header,
+    body.light-mode .nav-btn,
+    body.light-mode .search-console i {
+      color: var(--light-text-sec);
+    }
+    body.light-mode .studio-hero,
+    body.light-mode .vault-layout-header,
+    body.light-mode .studio-card,
+    body.light-mode .console-card,
+    body.light-mode .search-console input,
+    body.light-mode .btn-action-dim,
+    body.light-mode .studio-btn,
+    body.light-mode .console-input {
+      border-color: var(--light-border);
+    }
+    body.light-mode .studio-card,
+    body.light-mode .search-console input,
+    body.light-mode .btn-action-dim {
+      background-color: var(--light-surface);
+    }
+    body.light-mode .search-console input:focus {
+      background-color: var(--light-surface-elevated);
+      border-color: var(--solar-core);
+    }
+    body.light-mode .console-input {
+      background: #fff;
+      color: #000;
+    }
+    body.light-mode .studio-btn {
+      background: var(--light-surface-elevated);
+      color: var(--light-text-prime);
+    }
+    body.light-mode .studio-btn:hover {
+      background: #e2e8f0;
+    }
+    body.light-mode .studio-btn.btn-accent-solid {
+      background: var(--solar-core);
+      color: #fff;
+    }
+    body.light-mode .critic-response-panel {
+      background: var(--light-surface-elevated);
+      color: var(--light-text-sec);
+    }
+    body.light-mode .dock-anchor {
+      border-color: var(--light-border);
+      color: var(--light-text-sec);
+    }
+    body.light-mode .dock-anchor:hover {
+      color: var(--light-text-prime);
+    }
+
+    /* -------------------------------------- */
+    /* --- CONSOLE FOOTER SOCIAL DOCK ------- */
+    /* -------------------------------------- */
+    .studio-footer-dock {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 30px 4% 50px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .dock-anchor {
+      padding: 12px 24px;
+      border: 1px solid var(--studio-border);
+      border-radius: 6px;
+      color: var(--text-sec);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .dock-anchor:hover {
+      color: var(--text-prime);
+      border-color: var(--solar-core);
+    }
+
+    /* Responsive Grid Calculations */
+    @media (max-width: 768px) {
+      .studio-hero {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        text-align: center;
+      }
+      .avatar-deck { margin: 0 auto; }
+      .profile-details h1 { justify-content: center; }
+      .control-strip { flex-direction: column; align-items: stretch; }
+      .search-console { max-width: 100%; }
+      .vault-grid { grid-template-columns: 1fr; }
+      .navbar { padding: 0 4%; }
+      .studio-footer-dock { flex-direction: column; }
+      .dock-anchor { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MINIMALIST PRELOADER ARCHITECTURE -->
+  <div id="preloader">
+    <div class="studio-spinner"></div>
+    <div class="load-indicator">Console Initialization</div>
+  </div>
+
+  <!-- CONSOLE INTERFACE GATEWAY SYSTEM -->
+  <div id="login-overlay">
+    <audio id="bg-music" loop src="https://files.catbox.moe/1s4hgu.mp3"></audio>
+
+    <div id="start-prompt">
+      <button class="btn-terminal" onclick="startSite()">Mount Storage System</button>
+    </div>
+
+    <div class="console-card" style="display: none;" id="login-box">
+      <h2>Console Authentication</h2>
+      <input type="text" class="console-input" placeholder="User Reference Node ID">
+      <input type="password" class="console-input" placeholder="Secure Decryption Password">
+      <button class="btn-terminal" style="width:100%;" onclick="loginSuccess(event)">Unlock Terminal</button>
+    </div>
+  </div>
+
+  <!-- MAIN WORKSPACE PLATFORM AREA -->
+  <div id="main-content">
+    <nav class="navbar">
+      <div class="brand-core">SHAMMELODY <span>//</span> CORE</div>
+      <div class="nav-actions">
+        <button class="nav-btn" onclick="toggleFramework()" title="Change Visual Framework Theme">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Console Workspace Profile Block Area -->
+    <div class="studio-hero">
+      <div class="avatar-deck">
+        <img src="https://picsum.photos/300" alt="Sharmen Serem Profile Avatar">
+      </div>
+      <div class="profile-details">
+        <h1>Sharmen Serem <span class="node-badge">limuli01 v2.6</span></h1>
+        <div class="meta-bio">
+          Digital Audio Architect & Songwriter. Specialized in custom playback tracking frameworks, direct file vault storage streams, studio reference monitoring pipelines, and semantic AI music critique synthesis models.
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Structural Controls Line -->
+    <div class="control-strip">
+      <div class="search-console">
+        <i class="fa-solid fa-terminal"></i>
+        <input type="text" id="searchInput" placeholder="Query custom local indexes or fallback cloud..." oninput="filterSongs()">
+      </div>
+      <button class="btn-action-dim" onclick="resetEngine()">Clear Modifiers</button>
+    </div>
+
+    <div class="vault-layout-header">Active Media Indexes</div>
+
+    <!-- Primary Media Vault Grid View Deck -->
+    <div class="vault-grid" id="music-list"></div>
+
+    <!-- Interface Navigation Footer Anchor Core Dock Links -->
+    <div class="studio-footer-dock">
+      <a href="https://instagram.com/_shammelody" target="_blank" class="dock-anchor">
+        <i class="fa-brands fa-instagram"></i> Instagram Hub
+      </a>
+      <a href="https://www.facebook.com/shammelody0" target="_blank" class="dock-anchor">
+        <i class="fa-brands fa-facebook-f"></i> Facebook Directory
+      </a>
+      <a href="https://youtube.com/@shammelody?si=pZMbELGJNNEX6kc1" target="_blank" class="dock-anchor">
+        <i class="fa-brands fa-youtube"></i> YouTube Node
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // --- API CORE STRINGS STRATEGIES ---
+    const apiKey = "bwm_live_b85f9f75afaf5f4c3660fe53518c241f27dbfb1d45938e62"; 
+    const model = 'gemini-2.5-flash-preview-09-2025';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const preloader = document.getElementById('preloader');
+    const loginOverlay = document.getElementById('login-overlay');
+    const bgMusic = document.getElementById('bg-music');
+    const musicList = document.getElementById('music-list');
+
+    // Central Vault Audio Records Array Lists
+    const songs = [
+      {
+        title: "Dream World",
+        mp3: "https://files.catbox.moe/y9q4ws.mp3",
+        mp4: "https://files.catbox.moe/5fe9sq.mp4"
+      },
+      {
+        title: "Ocean Vibes",
+        mp3: "https://files.catbox.moe/1s4hgu.mp3",
+        mp4: "https://files.catbox.moe/vwbek0.mp4"
+      }
+    ];
+
+    const originalSongs = [...songs];
+
+    // --- LIFE CYCLE FLOW ARCHITECTURES ---
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        if (preloader) preloader.style.display = 'none';
+        if (loginOverlay) loginOverlay.style.display = 'flex';
+      }, 2500); 
+    });
+
+    function startSite() {
+      document.getElementById('start-prompt').style.display = 'none';
+      document.getElementById('login-box').style.display = 'block';
+      bgMusic.play().catch(e => console.log("Audio framework initialization constraints bypassed.", e));
+    }
+
+    function loginSuccess(e) {
+      e.preventDefault();
+      loginOverlay.style.display = 'none';
+      const main = document.getElementById('main-content');
+      main.style.display = 'block';
+      setTimeout(() => main.style.opacity = '1', 50);
+      bgMusic.pause();
+      renderSongs(originalSongs);
+    }
+
+    // --- DIRECT DIGITAL DOWNLOAD INTERFACES ---
+    async function directDownload(e, url, filename) {
+      const targetBtn = e.currentTarget || e.target;
+      const initialText = targetBtn.innerHTML;
+      targetBtn.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin'></i>";
+      
+      try {
+        const response = await fetch(url);
+        if(!response.ok) throw new Error("Terminal download exception encountered");
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = blobUrl;
+        anchor.download = filename || "studio-record.mp3";
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.target = '_blank';
+        anchor.download = filename;
+        anchor.click();
+      } finally {
+        targetBtn.innerHTML = initialText;
+      }
+    }
+
+    // --- DOCUMENT RENDERING GENERATIONS ---
+    function renderSongs(songArray) {
+      if (!musicList) return;
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const cleanId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
+        const card = document.createElement('div');
+        card.className = 'studio-card';
+        card.innerHTML = `
+          <div class="track-meta-block">
+            <h3><i class="fa-solid fa-compact-disc"></i> ${song.title}</h3>
+            <audio controls src="${song.mp3}"></audio>
+          </div>
+          <div>
+            <div class="studio-action-row">
+              <button class="studio-btn" onclick="directDownload(event, '${song.mp3}', '${song.title}.mp3')">
+                <i class="fa-solid fa-file-audio"></i> Audio
+              </button>
+              <button class="studio-btn" onclick="directDownload(event, '${song.mp4}', '${song.title}.mp4')">
+                <i class="fa-solid fa-file-video"></i> Video
+              </button>
+              <button class="studio-btn btn-accent-solid" onclick="generateReview('${song.title}', '${cleanId}')">
+                <i class="fa-solid fa-bolt"></i> AI Review
+              </button>
+            </div>
+            <div id="${cleanId}" class="critic-response-panel" style="display:none;"></div>
+          </div>
+        `;
+        musicList.appendChild(card);
+      });
+    }
+
+    function renderYouTubeSongs(songArray) {
+      if (!musicList) return;
+      musicList.innerHTML = '';
+      songArray.forEach(song => {
+        const cleanId = 'review-' + song.title.replace(/\s|[^a-zA-Z0-9]/g, '');
+        const card = document.createElement('div');
+        card.className = 'studio-card';
+        card.innerHTML = `
+          <div class="track-meta-block">
+            <h3><i class="fa-brands fa-youtube" style="color: var(--solar-core);"></i> Cloud Stream</h3>
+            <iframe width="100%" height="170" src="${song.mp4}" frameborder="0" allowfullscreen style="border-radius:4px; margin-bottom:16px; border:1px solid var(--studio-border);"></iframe>
+          </div>
+          <div>
+            <div class="studio-action-row" style="grid-template-columns: repeat(2, 1fr);">
+              <button class="studio-btn" onclick="window.open('${song.mp4}', '_blank')">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> YouTube
+              </button>
+              <button class="studio-btn btn-accent-solid" onclick="generateReview('${song.title}', '${cleanId}')">
+                <i class="fa-solid fa-bolt"></i> AI Review
+              </button>
+            </div>
+            <div id="${cleanId}" class="critic-response-panel" style="display:none;"></div>
+          </div>
+        `;
+        musicList.appendChild(card);
+      });
+    }
+
+    // --- SEARCH ROUTINES & CLOUD STORAGE PLUGINS ---
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      if (!query) {
+        renderSongs(originalSongs);
+        return;
+      }
+
+      const matched = songs.filter(s => s.title.toLowerCase().includes(query));
+
+      if (matched.length > 0) {
+        renderSongs(matched);
+      } else {
+        fetchSongsFromYouTube(query);
+      }
+    }
+
+    async function fetchSongsFromYouTube(query) {
+      const youtubeApiKey = "AIzaSyDu-3cMyAodP6UZxdqPbWLUYYZlQHXaUeo"; 
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query + ' music')}&type=video&videoCategoryId=10&maxResults=6&key=${youtubeApiKey}`;
+
+      try {
+        musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-sec); font-family:\'Space Grotesk\', sans-serif; font-size:0.85rem;"><i class="fa-solid fa-gear fa-spin"></i> Fetching records from active cloud indexes...</div>';
+        
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+          musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-sec); font-family:\'Space Grotesk\', sans-serif; font-size:0.85rem;">Zero active matching indices matching parameters.</div>';
+          return;
+        }
+
+        const youtubeSongs = data.items.map(item => ({
+          title: item.snippet.title,
+          mp3: '',
+          mp4: `https://www.youtube.com/embed/${item.id.videoId}`
+        }));
+
+        renderYouTubeSongs(youtubeSongs);
+      } catch (error) {
+        console.error("Cloud Node Error:", error);
+        musicList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#ef4444; font-family:\'Space Grotesk\', sans-serif; font-size:0.85rem;"><i class="fa-solid fa-triangle-exclamation"></i> Network array matrix requests timed out.</div>';
+      }
+    }
+
+    // --- ARTIFICIAL MUSIC CRITIQUE LOGIC DECK ---
+    async function generateReview(songTitle, elementId) {
+      const output = document.getElementById(elementId);
+      output.style.display = "block";
+      output.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin'></i> Running deep semantic evaluation...";
+
+      const promptPayload = {
+        contents: [{ parts: [{ text: `Provide a highly artistic, sophisticated, positive 3-sentence critique for a track titled "${songTitle}".` }] }],
+        systemInstruction: { parts: [{ text: "You are an elite, poetic music theorist." }] }
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(promptPayload)
+        });
+        const data = await response.json();
+        output.innerText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Review completed successfully.";
+      } catch (e) {
+        output.innerText = "Critique matrix processing pipelines offline.";
+      }
+    }
+
+    // --- CONSOLE ENGINE UTILITIES ---
+    function resetEngine() {
+      document.getElementById('searchInput').value = '';
+      renderSongs(originalSongs);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if(e.key === "Enter" && document.getElementById('login-box').style.display === "block") {
+        loginSuccess(e);
+      }
+    });
+
+    function toggleFramework() {
+      document.body.classList.toggle('light-mode');
+    }
+  </script>
+</body>
+</html>
